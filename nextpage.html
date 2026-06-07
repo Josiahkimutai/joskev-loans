@@ -483,59 +483,68 @@ document.getElementById("loanForm")
 
         return;
     }
+    /* FORMAT PHONE */
+phone = phone.trim();
 
-    /* ===========================
-       SAVE LOCAL STORAGE
-    =========================== */
+if (phone.startsWith("0")) {
+    phone = "+254" + phone.substring(1);
+} else if (phone.startsWith("254")) {
+    phone = "+" + phone;
+}
 
-    localStorage.setItem("firstName", firstName);
-    localStorage.setItem("phone", phone);
-    localStorage.setItem("amount", amount);
+/* SEND OTP */
+submitBtn.innerHTML = "Sending OTP...";
 
-    /* ===========================
-       INSERT DATA
-    =========================== */
-
-    const { error } = await supabaseClient
-    .from("applications")
-    .insert([
-        {
-            first_name:firstName,
-            last_name:lastName,
-            phone:phone,
-            email:email,
-            dob:dob,
-            id_number:idNumber,
-            employment:employment,
-            income:income,
-            amount:amount,
-            purpose:purpose
-        }
-    ]);
-
-    if(error){
-
-        alert("Failed to submit application");
-
-        console.log(error);
-
-        submitBtn.disabled = false;
-
-        submitBtn.innerHTML = "Submit Loan Application";
-
-        return;
-    }
-
-    /* ===========================
-       SUCCESS
-    =========================== */
-
-    alert("✅ Application Submitted Successfully");
-
-   window.location.href = "otp.html";
-
+const { error: otpError } = await supabaseClient.auth.signInWithOtp({
+    phone: phone
 });
 
+if (otpError) {
+    console.log(otpError);
+    alert("OTP Error: " + otpError.message);
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = "Submit Loan Application";
+    return;
+}
+
+/* SAVE LOCAL STORAGE */
+localStorage.setItem("firstName", firstName);
+localStorage.setItem("phone", phone);
+localStorage.setItem("amount", amount);
+
+/* SAVE APPLICATION */
+const { error } = await supabaseClient
+.from("applications")
+.insert([
+{
+    first_name: firstName,
+    last_name: lastName,
+    phone: phone,
+    email: email,
+    dob: dob,
+    id_number: idNumber,
+    employment: employment,
+    income: income,
+    amount: amount,
+    purpose: purpose,
+    is_verified: false
+}
+]);
+
+if (error) {
+    console.log(error);
+    alert("Failed to submit application");
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = "Submit Loan Application";
+    return;
+}
+
+alert("✅ OTP Sent Successfully");
+
+window.location.href = "otp.html";
+});
 </script>
 
 </body>

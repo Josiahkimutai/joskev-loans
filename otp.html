@@ -116,65 +116,93 @@ Enter OTP sent to<br>
 </div>
 
 <script>
-/* SHOW PHONE */
+/* GET PHONE FROM LOCAL STORAGE */
 const phone = localStorage.getItem("phone");
-document.getElementById("phoneText").innerText = phone || "Not found";
+
+/* SHOW PHONE ON PAGE */
+document.getElementById("phoneText").innerText =
+    phone || "Phone not found";
 
 /* SUPABASE */
 const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU"
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
 
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
 
-/* VERIFY */
-async function verifyDetails(){
+/* VERIFY OTP */
+async function verifyDetails() {
 
-    let otp = document.getElementById("otp").value;
-    let password = document.getElementById("password").value;
-    let confirmPassword = document.getElementById("confirmPassword").value;
-    let message = document.getElementById("message");
+    const otp = document.getElementById("otp").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const confirmPassword = document.getElementById("confirmPassword").value.trim();
+    const message = document.getElementById("message");
 
-    if(!phone){
-        message.innerHTML = "❌ Phone not found";
-        return;
+    try {
+
+        if (!phone) {
+            message.innerHTML = "❌ Phone number not found";
+            return;
+        }
+
+        if (!otp) {
+            message.innerHTML = "❌ Enter OTP code";
+            return;
+        }
+
+        if (password.length < 6) {
+            message.innerHTML = "❌ Password must be at least 6 characters";
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            message.innerHTML = "❌ Passwords do not match";
+            return;
+        }
+
+        message.innerHTML = "⏳ Verifying OTP...";
+
+        /* VERIFY OTP WITH SUPABASE */
+        const { data, error } = await supabaseClient.auth.verifyOtp({
+            phone: phone,
+            token: otp,
+            type: "sms"
+        });
+
+        if (error) {
+            console.error(error);
+            message.innerHTML = "❌ " + error.message;
+            return;
+        }
+
+        /* UPDATE APPLICATION RECORD */
+        const { error: updateError } = await supabaseClient
+            .from("applications")
+            .update({
+                is_verified: true
+            })
+            .eq("phone", phone);
+
+        if (updateError) {
+            console.error(updateError);
+            message.innerHTML = "❌ Failed to update account";
+            return;
+        }
+
+        message.innerHTML = "✅ Verified Successfully";
+
+        setTimeout(() => {
+            window.location.href = "loading.html";
+        }, 2000);
+
+    } catch (err) {
+
+        console.error(err);
+        message.innerHTML = "❌ " + err.message;
+
     }
-
-    if(otp !== "123456"){
-        message.innerHTML = "❌ Incorrect OTP";
-        return;
-    }
-
-    if(password.length < 6){
-        message.innerHTML = "❌ Password too short";
-        return;
-    }
-
-    if(password !== confirmPassword){
-        message.innerHTML = "❌ Passwords do not match";
-        return;
-    }
-
-    /* UPDATE SUPABASE */
-    const { error } = await supabaseClient
-        .from("applications")
-        .update({
-            password: password,
-            is_verified: true
-        })
-        .eq("phone", phone);
-
-    if(error){
-        console.log(error);
-        message.innerHTML = "❌ Failed to save data";
-        return;
-    }
-
-    message.innerHTML = "✅ Verified Successfully";
-
-    /* FIXED LOADING REDIRECT */
-    setTimeout(() => {
-        window.location.href = "loading.html";
-    }, 2000);
 }
 </script>
 
