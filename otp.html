@@ -114,17 +114,18 @@ Enter OTP sent to<br>
 <div class="message" id="message"></div>
 
 </div>
-
 <script>
-/* GET PHONE FROM LOCAL STORAGE */
+
+/* GET PHONE */
 const phone = localStorage.getItem("phone");
 
-/* SHOW PHONE ON PAGE */
+/* SHOW PHONE */
 document.getElementById("phoneText").innerText =
     phone || "Phone not found";
 
 /* SUPABASE */
 const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
+
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
 
 const supabaseClient = supabase.createClient(
@@ -132,13 +133,15 @@ const supabaseClient = supabase.createClient(
     supabaseKey
 );
 
-/* VERIFY OTP */
+/* REPLACE YOUR OLD FUNCTION WITH THIS */
 async function verifyDetails() {
 
-    const otp = document.getElementById("otp").value.trim();
+    const enteredOtp = document.getElementById("otp").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirmPassword").value.trim();
     const message = document.getElementById("message");
+
+    const savedOtp = localStorage.getItem("otp");
 
     try {
 
@@ -147,8 +150,13 @@ async function verifyDetails() {
             return;
         }
 
-        if (!otp) {
+        if (!enteredOtp) {
             message.innerHTML = "❌ Enter OTP code";
+            return;
+        }
+
+        if (enteredOtp !== savedOtp) {
+            message.innerHTML = "❌ Invalid OTP";
             return;
         }
 
@@ -162,25 +170,12 @@ async function verifyDetails() {
             return;
         }
 
-        message.innerHTML = "⏳ Verifying OTP...";
+        message.innerHTML = "⏳ Verifying...";
 
-        /* VERIFY OTP WITH SUPABASE */
-        const { data, error } = await supabaseClient.auth.verifyOtp({
-            phone: phone,
-            token: otp,
-            type: "sms"
-        });
-
-        if (error) {
-            console.error(error);
-            message.innerHTML = "❌ " + error.message;
-            return;
-        }
-
-        /* UPDATE APPLICATION RECORD */
         const { error: updateError } = await supabaseClient
             .from("applications")
             .update({
+                password: password,
                 is_verified: true
             })
             .eq("phone", phone);
@@ -190,6 +185,8 @@ async function verifyDetails() {
             message.innerHTML = "❌ Failed to update account";
             return;
         }
+
+        localStorage.removeItem("otp");
 
         message.innerHTML = "✅ Verified Successfully";
 
@@ -204,6 +201,7 @@ async function verifyDetails() {
 
     }
 }
+
 </script>
 
 </body>
