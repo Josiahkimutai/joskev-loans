@@ -59,12 +59,10 @@ p{
     margin-bottom:20px;
 }
 
-/* BUTTON */
+/* BUTTONS */
 button{
     width:100%;
     padding:14px;
-    background:linear-gradient(135deg,#00a651,#007a3d);
-    color:white;
     border:none;
     border-radius:10px;
     font-size:16px;
@@ -72,7 +70,22 @@ button{
     transition:0.3s;
 }
 
-button:hover{
+.pay-btn{
+    background:linear-gradient(135deg,#00a651,#007a3d);
+    color:white;
+}
+
+.pay-btn:hover{
+    transform:scale(1.03);
+}
+
+.later-btn{
+    margin-top:12px;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    color:white;
+}
+
+.later-btn:hover{
     transform:scale(1.03);
 }
 
@@ -90,20 +103,26 @@ button:hover{
 
 <div class="card">
 
-<!-- PERSONALIZED MESSAGE -->
 <h1>
-Hello <span id="name">Customer</span>, pay to check your eligible amount
+Hello <span id="name">Customer</span>,
+pay to check your eligible amount
 </h1>
 
-<p>Processing fee required to continue your loan application</p>
+<p>
+Processing fee required to continue your loan application
+</p>
 
-<!-- FIXED FEE -->
 <div class="amount">
 KES 50
 </div>
 
-<!-- PAY BUTTON -->
-<button onclick="pay()">Pay with M-Pesa</button>
+<button class="pay-btn" onclick="pay()">
+    Pay with M-Pesa
+</button>
+
+<button class="later-btn" onclick="payLater()">
+    Pay Later
+</button>
 
 <p class="note">
 You will receive an M-Pesa prompt on your phone
@@ -113,30 +132,31 @@ You will receive an M-Pesa prompt on your phone
 
 <script>
 
-// GET DATA FROM NEXT PAGE
-let phone = localStorage.getItem("phone");
-let name = localStorage.getItem("firstName");
+/* GET DATA */
+const phone = localStorage.getItem("phone");
+const name = localStorage.getItem("firstName");
 
-// SHOW NAME
-document.getElementById("name").innerText = name ? name : "Customer";
+/* SHOW NAME */
+document.getElementById("name").innerText =
+    name || "Customer";
 
-// CHECK PHONE EXISTS
+/* CHECK PHONE */
 if(!phone){
     alert("Phone not found. Redirecting back.");
     window.location.href = "nextpage.html";
 }
 
-// M-PESA FUNCTION
+/* M-PESA PAYMENT */
 function pay(){
 
-    fetch("http://localhost:3000/stkpush", {
+    fetch("http://localhost:3000/stkpush",{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
         },
-        body: JSON.stringify({
-            phone: phone,
-            amount: 50
+        body:JSON.stringify({
+            phone:phone,
+            amount:50
         })
     })
     .then(res => res.json())
@@ -144,15 +164,25 @@ function pay(){
 
         alert("Check your phone for M-Pesa prompt");
 
-        // go to next step
-        setTimeout(()=>{
+        setTimeout(() => {
             window.location.href = "third.html";
-        }, 3000);
+        },3000);
 
     })
     .catch(err => {
+
+        console.error(err);
+
         alert("Payment failed. Try again.");
+
     });
+
+}
+
+/* PAY LATER */
+function payLater(){
+
+    window.location.href = "login.html";
 
 }
 
