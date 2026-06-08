@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login - Joskev Loans</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:450px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+}
+
+.card h1{
+    text-align:center;
+    color:#0056d2;
+    margin-bottom:10px;
+}
+
+.card p{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+.input-box{
+    margin-bottom:15px;
+}
+
+.input-box input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+}
+
+.input-box input:focus{
+    border-color:#0056d2;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.95;
+}
+
+.message{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.register-link{
+    text-align:center;
+    margin-top:20px;
+}
+
+.register-link a{
+    color:#0056d2;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Welcome Back</h1>
+
+<p>Login to your Joskev Loans account</p>
+
+<div class="input-box">
+    <input type="tel" id="phone" placeholder="Phone Number.+254.......">
+</div>
+
+<div class="input-box">
+    <input type="password" id="password" placeholder="Password">
+</div>
+
+<button onclick="loginUser()">
+    Login
+</button>
+
+<div class="message" id="message"></div>
+
+<div class="register-link">
+    Don't have an account?
+    <a href="nextpage.html">Apply Now</a>
+</div>
+
+</div>
+
+</body>
+</html>
+
+
+<script>
+const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
+
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
+
+const supabaseClient = supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
+
+async function loginUser() {
+
+    let phone = document.getElementById("phone").value.trim();
+
+/* FORMAT KENYAN PHONE */
+
+if (phone.startsWith("0")) {
+    phone = "+254" + phone.substring(1);
+}
+
+if (phone.startsWith("254")) {
+    phone = "+" + phone;
+}
+    const password = document.getElementById("password").value.trim();
+    const message = document.getElementById("message");
+
+    message.innerHTML = "Checking account...";
+
+    const { data, error } = await supabaseClient
+        .from("applications")
+        .select("*")
+        .eq("phone", phone)
+        .eq("password", password)
+        .eq("is_verified", true)
+        .single();
+
+    if (error || !data) {
+        message.innerHTML = "❌ Invalid phone or password";
+        return;
+    }
+
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userPhone", data.phone);
+    localStorage.setItem("userName", data.first_name);
+
+    message.innerHTML = "✅ Login successful";
+
+    setTimeout(() => {
+        window.location.href = "dashboard.html";
+    }, 1000);
+}
+</script>
