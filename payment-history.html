@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Payment History - Joskev Loans</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f5f8ff;
+    min-height:100vh;
+    padding:30px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1{
+    color:#0056d2;
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.customer-box{
+    background:#eef4ff;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:25px;
+}
+
+.customer-box p{
+    margin:8px 0;
+    font-size:16px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#0056d2;
+    color:white;
+    padding:15px;
+    text-align:left;
+}
+
+table td{
+    padding:15px;
+    border-bottom:1px solid #eee;
+}
+
+.status-success{
+    color:#12a150;
+    font-weight:bold;
+}
+
+.status-pending{
+    color:#ff9800;
+    font-weight:bold;
+}
+
+.status-failed{
+    color:red;
+    font-weight:bold;
+}
+
+.buttons{
+    margin-top:25px;
+}
+
+.btn{
+    display:inline-block;
+    text-decoration:none;
+    background:#0056d2;
+    color:white;
+    padding:14px 20px;
+    border-radius:10px;
+    margin-right:10px;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+.no-payment{
+    text-align:center;
+    color:#777;
+    padding:25px;
+}
+
+@media(max-width:768px){
+
+table{
+    font-size:14px;
+}
+
+.card{
+    padding:20px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Payment History</h1>
+
+<div class="customer-box">
+
+<p><strong>Name:</strong>
+<span id="customerName"></span>
+</p>
+
+<p><strong>Phone:</strong>
+<span id="customerPhone"></span>
+</p>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Description</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="paymentTable">
+
+<tr>
+<td colspan="4" class="no-payment">
+No payment records found
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+<div class="buttons">
+
+<a href="dashboard.html" class="btn">
+🏠 Dashboard
+</a>
+
+<a href="loan-status.html" class="btn">
+💰 Loan Status
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* CUSTOMER INFO */
+
+const firstName =
+localStorage.getItem("firstName") || "Customer";
+
+const phone =
+localStorage.getItem("phone") || "Not Available";
+
+document.getElementById("customerName").innerText =
+firstName;
+
+document.getElementById("customerPhone").innerText =
+phone;
+
+/* SAMPLE PAYMENT RECORD */
+
+const paymentMade =
+localStorage.getItem("processingFeePaid");
+
+if(paymentMade === "true"){
+
+document.getElementById("paymentTable").innerHTML = `
+
+<tr>
+<td>${new Date().toLocaleDateString()}</td>
+<td>Loan Processing Fee</td>
+<td>KES 50</td>
+<td class="status-success">Successful</td>
+</tr>
+
+`;
+
+}
+
+</script>
+
+</body>
+</html>

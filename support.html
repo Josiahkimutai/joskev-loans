@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Support - Joskev Loans</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f5f8ff;
+    min-height:100vh;
+    padding:30px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1{
+    text-align:center;
+    color:#0056d2;
+    margin-bottom:15px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:30px;
+}
+
+.support-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.support-box{
+    background:#eef4ff;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.support-box h3{
+    color:#0056d2;
+    margin-bottom:10px;
+}
+
+.support-box p{
+    color:#555;
+}
+
+.contact-form{
+    margin-top:35px;
+}
+
+.input-box{
+    margin-bottom:15px;
+}
+
+.input-box input,
+.input-box textarea{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+}
+
+.input-box textarea{
+    resize:none;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.95;
+}
+
+.message{
+    margin-top:15px;
+    text-align:center;
+    color:green;
+    font-weight:bold;
+}
+
+.buttons{
+    margin-top:25px;
+    text-align:center;
+}
+
+.btn{
+    display:inline-block;
+    padding:14px 20px;
+    background:#0056d2;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Customer Support</h1>
+
+<p class="subtitle">
+We're here to help you 24/7
+</p>
+
+<div class="support-grid">
+
+<div class="support-box">
+<h3>📞 Call Us</h3>
+<p>+254 725 880 306</p>
+</div>
+
+<div class="support-box">
+<h3>📧 Email</h3>
+<p>support@joskevloans.com</p>
+</div>
+
+<div class="support-box">
+<h3>💬 WhatsApp</h3>
+
+<p>
+<a href="https://wa.me/254725880306"
+target="_blank"
+style="color:#25D366;text-decoration:none;font-weight:bold;">
+Chat on WhatsApp
+</a>
+</p>
+
+</div>
+
+</div>
+
+<div class="contact-form">
+
+<div class="input-box">
+<input type="text"
+id="name"
+placeholder="Your Name">
+</div>
+
+<div class="input-box">
+<input type="email"
+id="email"
+placeholder="Your Email">
+</div>
+
+<div class="input-box">
+<textarea
+id="messageText"
+rows="5"
+placeholder="Describe your issue"></textarea>
+</div>
+
+<button onclick="sendMessage()">
+Send Message
+</button>
+
+<div class="message" id="message"></div>
+
+</div>
+
+<div class="buttons">
+
+<a href="dashboard.html" class="btn">
+🏠 Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function sendMessage(){
+
+    const name =
+    document.getElementById("name").value;
+
+    const email =
+    document.getElementById("email").value;
+
+    const issue =
+    document.getElementById("messageText").value;
+
+    if(!name || !email || !issue){
+
+        alert("Please fill all fields");
+
+        return;
+    }
+
+    document.getElementById("message").innerHTML =
+    "✅ Support request submitted successfully";
+
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("messageText").value = "";
+
+}
+
+</script>
+
+</body>
+</html>
