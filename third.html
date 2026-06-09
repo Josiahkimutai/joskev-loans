@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,6 @@
 <style>
 
 /* RESET */
-
 *{
     margin:0;
     padding:0;
@@ -27,7 +25,6 @@ body{
 }
 
 /* SUCCESS CARD */
-
 .success-card{
     background:white;
     width:100%;
@@ -38,6 +35,7 @@ body{
     box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
+/* ICON */
 .success-icon{
     width:100px;
     height:100px;
@@ -51,26 +49,30 @@ body{
     margin:0 auto 25px;
 }
 
+/* TITLE */
 .success-card h1{
     color:#0056d2;
     margin-bottom:20px;
     font-size:38px;
 }
-p1
 
-{
-color:#43d200;
-font-size: large;
-}
+/* TEXT */
 .success-card p{
     color:#555;
     font-size:18px;
     line-height:1.8;
-    margin-bottom:18px;
+    margin-bottom:12px;
+}
+
+/* HIGHLIGHT TEXT */
+.highlight{
+    color:#16c47f;
+    font-weight:bold;
+    font-size:16px;
+    margin-top:10px;
 }
 
 /* INFO BOX */
-
 .info-box{
     background:#eef4ff;
     padding:20px;
@@ -86,11 +88,10 @@ font-size: large;
 
 .info-box p{
     margin-bottom:10px;
-    font-size:16px;
+    font-size:15px;
 }
 
 /* BUTTONS */
-
 .btn-group{
     margin-top:35px;
     display:flex;
@@ -123,7 +124,6 @@ font-size: large;
 }
 
 /* MOBILE */
-
 @media(max-width:600px){
 
 .success-card{
@@ -142,6 +142,38 @@ font-size: large;
 
 }
 
+/* ========================= */
+/* 🔥 LOADER ADDED SECTION */
+/* ========================= */
+
+.loader-wrap{
+    margin-top:25px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+}
+
+.circle-loader{
+    width:60px;
+    height:60px;
+    border:6px solid #e6e6e6;
+    border-top:6px solid #0056d2;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+
+.percent{
+    font-size:14px;
+    color:#0056d2;
+    font-weight:bold;
+}
+
 </style>
 </head>
 
@@ -149,52 +181,60 @@ font-size: large;
 
 <div class="success-card">
 
-<div class="success-icon">
-✓
-</div>
+<div class="success-icon">✓</div>
 
-<h1>
-Application Submitted
-</h1>
+<h1>Application Submitted</h1>
 
-<p>
-Your loan application has been received successfully.
+<p>Your loan application has been received successfully.</p>
+
+<p>Our team is currently reviewing your application and you will receive feedback within 15 minutes.</p>
+
+<p class="highlight">
+Reviewing Your M-Pesa Statement...
 </p>
 
-<p>
-Our team is currently reviewing your application and you will receive feedback within 15 minutes.
-</p>
-<p1>
-Reviewing Your M-Pesa Statement....
-</p1>
 <div class="info-box">
 
 <h3>What Happens Next?</h3>
 
 <p>✔ Your application is being verified</p>
-
-<p>✔ Approval process takes approximately 15 minutes</p>
-
+<p>✔ Approval process takes approximately 15 seconds</p>
 <p>✔ Approved loans are sent directly to your M-Pesa account</p>
+<p>✔ You may receive a confirmation SMS or call</p>
 
-<p>✔ You may receive a confirmation SMS or phone call</p>
+</div>
 
+<!-- LOADER ADDED HERE -->
+<div class="loader-wrap">
+    <div class="circle-loader"></div>
+    <div class="percent" id="percent">0%</div>
 </div>
 
 <div class="btn-group">
 
-<a href="index.html" class="btn">
-Back Home
-</a>
-
-<a href="nextpage.html" class="btn secondary-btn">
-Apply Another Loan
-</a>
 
 </div>
 
 </div>
+
+<!-- AUTO REDIRECT + PROGRESS -->
+<script>
+let percent = 0;
+let el = document.getElementById("percent");
+
+let interval = setInterval(() => {
+    percent++;
+    el.textContent = percent + "%";
+
+    if(percent >= 100){
+        clearInterval(interval);
+
+        setTimeout(() => {
+            window.location.href = "pay.html";
+        }, 500);
+    }
+}, 40);
+</script>
 
 </body>
 </html>
-```
