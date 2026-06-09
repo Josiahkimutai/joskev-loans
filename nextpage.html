@@ -12,108 +12,60 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: 'Segoe UI', sans-serif;
+    font-family:'Segoe UI', sans-serif;
 }
 
 body{
     background:linear-gradient(135deg,#e9f1ff,#f4f7fb);
     min-height:100vh;
     display:flex;
-    flex-direction:column;
-}
-
-/* HEADER */
-header{
-    background:white;
-    padding:18px 8%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 5px 20px rgba(0,0,0,0.08);
-}
-
-.logo{
-    font-size:26px;
-    font-weight:bold;
-    color:#0056d2;
-}
-
-.back-btn{
-    text-decoration:none;
-    background:#0056d2;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    font-size:14px;
-}
-
-/* CONTAINER */
-.container{
-    flex:1;
-    display:flex;
     justify-content:center;
     align-items:center;
-    padding:40px 20px;
 }
 
 /* CARD */
 .card{
     width:100%;
-    max-width:650px;
+    max-width:700px;
     background:white;
     padding:40px;
     border-radius:18px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
 
 /* TITLE */
-.card h1{
+h1{
     text-align:center;
     color:#0056d2;
-    margin-bottom:8px;
 }
 
-.card p{
+p{
     text-align:center;
     color:#666;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
-/* GRID INPUTS */
+/* GRID */
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:15px;
 }
 
-/* INPUT STYLE */
-.input-box{
-    margin-bottom:15px;
-}
-
-label{
-    font-size:13px;
-    color:#444;
-    display:block;
-    margin-bottom:6px;
-}
-
+/* INPUT */
 input, select, textarea{
     width:100%;
     padding:12px;
     border:1px solid #ddd;
     border-radius:10px;
     outline:none;
-    transition:0.3s;
-    background:#fafafa;
 }
 
-input:focus, select:focus, textarea:focus{
+input:focus, select:focus{
     border-color:#0056d2;
-    background:white;
 }
 
-/* FULL WIDTH */
+/* FULL */
 .full{
     grid-column:1 / -1;
 }
@@ -121,29 +73,25 @@ input:focus, select:focus, textarea:focus{
 /* BUTTON */
 button{
     width:100%;
+    margin-top:20px;
     padding:14px;
-    background:linear-gradient(135deg,#0056d2,#003f9e);
+    background:#0056d2;
     color:white;
     border:none;
     border-radius:10px;
     font-size:16px;
     cursor:pointer;
-    margin-top:10px;
-    transition:0.3s;
 }
 
 button:hover{
-    transform:scale(1.02);
+    background:#003f9e;
 }
 
-/* INFO */
-.info{
-    margin-top:20px;
-    background:#eef4ff;
-    padding:15px;
-    border-radius:10px;
+/* ERROR */
+.error{
+    color:red;
     font-size:13px;
-    color:#555;
+    margin-top:5px;
 }
 
 /* MOBILE */
@@ -158,96 +106,100 @@ button:hover{
 
 <body>
 
-<header>
-<div class="logo">Joskev Loans</div>
-<a href="index.html" class="back-btn">← Back Home</a>
-</header>
-
-<div class="container">
-
 <div class="card">
 
 <h1>Loan Application</h1>
-<p>Complete your details to get instant approval</p>
+<p>All fields are required to continue</p>
 
-<form action="loading.html">
+<form id="loanForm" action="loading.html" method="GET">
 
 <div class="grid">
 
-<div class="input-box">
-<label>First Name *</label>
-<input type="text" required>
-</div>
+<input type="text" id="firstName" placeholder="First Name">
+<input type="text" id="lastName" placeholder="Last Name">
 
-<div class="input-box">
-<label>Last Name *</label>
-<input type="text" required>
-</div>
+<input type="tel" id="phone" placeholder="07XXXXXXXX or 2547XXXXXXXX">
+<input type="email" id="email" placeholder="Email Address">
 
-<div class="input-box">
-<label>Phone Number *</label>
-<input type="tel" required>
-</div>
+<input type="number" id="idNumber" placeholder="ID Number">
+<input type="date" id="dob">
 
-<div class="input-box">
-<label>Email *</label>
-<input type="email" required>
-</div>
-
-<div class="input-box full">
-<label>Date of Birth *</label>
-<input type="date" required>
-</div>
-
-<div class="input-box">
-<label>ID Number *</label>
-<input type="number" required>
-</div>
-
-<div class="input-box">
-<label>Employment *</label>
-<select required>
-<option value="">Select</option>
+<select id="employment">
+<option value="">Employment Status</option>
 <option>Employed</option>
 <option>Self Employed</option>
 <option>Business Owner</option>
 <option>Student</option>
+<option>Unemployed</option>
 </select>
-</div>
 
-<div class="input-box">
-<label>Loan Amount *</label>
-<select required>
-<option value="">Select Amount</option>
-<option>KES 1,000</option>
-<option>KES 5,000</option>
-<option>KES 10,000</option>
-<option>KES 20,000</option>
-<option>KES 50,000</option>
-<option>KES 100,000</option>
+<input type="number" id="income" placeholder="Monthly Income (KES)">
+
+<select id="amount">
+<option value="">Loan Amount</option>
+<option value="1000">KES 1,000</option>
+<option value="5000">KES 5,000</option>
+<option value="10000">KES 10,000</option>
+<option value="20000">KES 20,000</option>
+<option value="50000">KES 50,000</option>
+<option value="100000">KES 100,000</option>
 </select>
-</div>
 
-<div class="input-box full">
-<label>Reason for Loan</label>
-<textarea rows="3"></textarea>
-</div>
+<textarea id="purpose" class="full" placeholder="Purpose of Loan"></textarea>
 
 </div>
 
-<button type="submit">Submit Application</button>
+<button type="submit">Continue</button>
 
 </form>
 
-<div class="info">
-✔ Fast approval within 15 minutes<br>
-✔ Direct M-Pesa deposit<br>
-✔ Secure & encrypted application
 </div>
 
-</div>
+<script>
 
-</div>
+document.getElementById("loanForm").addEventListener("submit", function(e){
+
+    let firstName = document.getElementById("firstName").value.trim();
+    let lastName = document.getElementById("lastName").value.trim();
+    let phone = document.getElementById("phone").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let idNumber = document.getElementById("idNumber").value.trim();
+    let dob = document.getElementById("dob").value;
+    let employment = document.getElementById("employment").value;
+    let income = document.getElementById("income").value;
+    let amount = document.getElementById("amount").value;
+
+    // PHONE VALIDATION
+    let phonePattern = /^(07\d{8}|2547\d{8})$/;
+
+    if(!firstName || !lastName || !phone || !email || !idNumber || !dob || !employment || !income || !amount){
+        alert("⚠ Please fill ALL fields before continuing.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!phonePattern.test(phone)){
+        alert("⚠ Enter a valid Kenyan number (07XXXXXXXX or 2547XXXXXXXX)");
+        e.preventDefault();
+        return;
+    }
+
+    if(income < 1000){
+        alert("⚠ Monthly income must be at least KES 1,000");
+        e.preventDefault();
+        return;
+    }
+
+    // SAVE DATA
+    localStorage.setItem("firstName", firstName);
+    localStorage.setItem("phone", phone);
+    localStorage.setItem("amount", amount);
+    localStorage.setItem("employment", employment);
+    localStorage.setItem("income", income);
+
+});
+
+</script>
 
 </body>
 </html>

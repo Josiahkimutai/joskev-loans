@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promotions & News - Joskev Loans</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* HEADER */
+header{
+    background:white;
+    padding:18px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:#0056d2;
+}
+
+.back-btn{
+    text-decoration:none;
+    background:#0056d2;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+}
+
+/* TITLE */
+.title{
+    text-align:center;
+    padding:60px 20px 20px;
+}
+
+.title h1{
+    font-size:40px;
+    color:#0056d2;
+}
+
+.title p{
+    color:#555;
+    margin-top:10px;
+}
+
+/* GRID */
+.container{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    padding:40px 20px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    width:320px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+/* BADGE */
+.badge{
+    display:inline-block;
+    background:#0056d2;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+/* TEXT */
+.card h3{
+    color:#111;
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#555;
+    line-height:1.6;
+    font-size:14px;
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:25px;
+    background:#003f9e;
+    color:white;
+    margin-top:40px;
+}
+
+/* MOBILE */
+@media(max-width:700px){
+    .title h1{
+        font-size:28px;
+    }
+
+    .card{
+        width:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+<div class="logo">Joskev Loans</div>
+<a href="index.html" class="back-btn">← Back Home</a>
+</header>
+
+<!-- TITLE -->
+<div class="title">
+<h1>Promotions & News</h1>
+<p>Latest updates, offers and loan promotions</p>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+<div class="card">
+<span class="badge">NEW OFFER</span>
+<h3>0% Interest First Loan</h3>
+<p>Get your first loan with zero interest for new customers applying today.</p>
+</div>
+
+<div class="card">
+<span class="badge">PROMO</span>
+<h3>Instant Approval Bonus</h3>
+<p>Apply now and get approved within 10 minutes during this promotion period.</p>
+</div>
+
+<div class="card">
+<span class="badge">UPDATE</span>
+<h3>Higher Loan Limits</h3>
+<p>You can now borrow up to KES 200,000 with flexible repayment plans.</p>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+© 2026 Joskev Loans. All Rights Reserved.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joskev Loans</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#f4f7fb,#e9f1ff);
+    padding:60px 20px;
+}
+
+/* TITLE */
+h2{
+    text-align:center;
+    font-size:38px;
+    color:#0056d2;
+    margin-bottom:40px;
+}
+
+/* GRID */
+.cards{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+/* CARD */
+.card{
+    background:white;
+    width:300px;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    transition:0.3s;
+    text-align:center;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+/* ICON STYLE (OPTIONAL) */
+.card::before{
+    content:"✔";
+    display:block;
+    font-size:28px;
+    color:#0056d2;
+    margin-bottom:15px;
+}
+
+/* TITLE INSIDE CARD */
+.card h3{
+    color:#0056d2;
+    margin-bottom:12px;
+    font-size:22px;
+}
+
+/* TEXT */
+.card p{
+    color:#555;
+    line-height:1.6;
+    font-size:15px;
+}
+
+/* MOBILE */
+@media(max-width:700px){
+    h2{
+        font-size:30px;
+    }
+
+    .card{
+        width:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>Why Choose Joskev Loans</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Direct M-Pesa Transfer</h3>
+<p>We transfer money directly to your M-Pesa account quickly and securely.</p>
+</div>
+
+<div class="card">
+<h3>Flexible Repayment</h3>
+<p>We give customers the opportunity to prolong the loan repayment period.</p>
+</div>
+
+<div class="card">
+<h3>Quick Approval</h3>
+<p>Simple and fast approval process within 15 minutes.</p>
+</div>
+
+</div>
+
+</body>
+</html>

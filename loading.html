@@ -6,7 +6,6 @@
 <title>Processing Loan - Joskev Loans</title>
 
 <style>
-
 /* RESET */
 *{
     margin:0;
@@ -32,12 +31,10 @@ body{
     max-width:500px;
 }
 
-/* LOGO */
 .logo{
     font-size:26px;
     font-weight:bold;
     margin-bottom:20px;
-    opacity:0.9;
 }
 
 /* SPINNER */
@@ -56,69 +53,23 @@ body{
     100%{transform:rotate(360deg);}
 }
 
-/* TITLE */
 h1{
     font-size:34px;
     margin-bottom:10px;
 }
 
-/* TEXT */
 p{
     font-size:16px;
     opacity:0.9;
-    line-height:1.6;
 }
 
-/* STATUS BOX */
+/* STATUS */
 .status{
     margin-top:25px;
     background:rgba(255,255,255,0.15);
     padding:15px;
     border-radius:12px;
-    font-size:14px;
 }
-
-/* DOT ANIMATION */
-.dots::after{
-    content:'';
-    animation:dots 1.5s infinite;
-}
-
-@keyframes dots{
-    0%{content:'';}
-    33%{content:'.';}
-    66%{content:'..';}
-    100%{content:'...';}
-}
-
-/* PROGRESS BAR */
-.progress-container{
-    margin-top:25px;
-    background:rgba(255,255,255,0.2);
-    height:10px;
-    border-radius:20px;
-    overflow:hidden;
-}
-
-.progress-bar{
-    height:100%;
-    width:0%;
-    background:white;
-    animation:load 5s forwards;
-}
-
-@keyframes load{
-    0%{width:0%;}
-    100%{width:100%;}
-}
-
-/* MOBILE */
-@media(max-width:500px){
-    h1{
-        font-size:26px;
-    }
-}
-
 </style>
 </head>
 
@@ -132,9 +83,7 @@ p{
 
 <h1>Processing Your Loan</h1>
 
-<p>
-Please wait while we verify your details and check your eligibility<span class="dots"></span>
-</p>
+<p>Please wait while we verify your details...</p>
 
 <div class="status">
 ✔ Checking credit score<br>
@@ -142,15 +91,21 @@ Please wait while we verify your details and check your eligibility<span class="
 ✔ Preparing M-Pesa disbursement
 </div>
 
-<div class="progress-container">
-<div class="progress-bar"></div>
 </div>
 
-</div>
+<!-- ✅ YOUR SCRIPT ADDED HERE -->
+<script>
+let phone = localStorage.getItem("phone");
+let amount = localStorage.getItem("amount");
 
+console.log("Phone:", phone);
+console.log("Amount:", amount);
+</script>
+
+<!-- REDIRECT TO PAY PAGE -->
 <script>
 setTimeout(() => {
-    window.location.href = "third.html";
+    window.location.href = "pay.html";
 }, 5000);
 </script>
 

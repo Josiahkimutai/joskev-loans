@@ -1,0 +1,51 @@
+/* NAVBAR */
+.navbar{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+/* LINKS */
+.navbar a{
+    text-decoration:none;
+    color:#333;
+    font-size:15px;
+    font-weight:500;
+    padding:10px 14px;
+    border-radius:8px;
+    transition:0.3s;
+    position:relative;
+}
+
+/* HOVER EFFECT */
+.navbar a:hover{
+    background:#0056d2;
+    color:white;
+    transform:translateY(-2px);
+}
+
+/* ACTIVE UNDERLINE STYLE (optional effect) */
+.navbar a::after{
+    content:'';
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:0;
+    height:2px;
+    background:#0056d2;
+    transition:0.3s;
+    transform:translateX(-50%);
+}
+
+.navbar a:hover::after{
+    width:60%;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+    .navbar{
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:10px;
+    }
+}

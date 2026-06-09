@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M-Pesa Payment - Joskev Loans</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#f4f7fb,#e9f1ff);
+}
+
+/* CARD */
+.card{
+    background:white;
+    width:100%;
+    max-width:420px;
+    padding:40px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+/* TITLE */
+h1{
+    color:#0056d2;
+    margin-bottom:10px;
+    font-size:22px;
+    line-height:1.4;
+}
+
+/* SUB TEXT */
+p{
+    color:#666;
+    margin-bottom:20px;
+}
+
+/* AMOUNT BOX */
+.amount{
+    background:#eef4ff;
+    padding:18px;
+    border-radius:12px;
+    font-size:22px;
+    font-weight:bold;
+    color:#0056d2;
+    margin-bottom:20px;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:14px;
+    background:linear-gradient(135deg,#00a651,#007a3d);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+/* NOTE */
+.note{
+    margin-top:15px;
+    font-size:12px;
+    color:#888;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- PERSONALIZED MESSAGE -->
+<h1>
+Hello <span id="name">Customer</span>, pay to check your eligible amount
+</h1>
+
+<p>Processing fee required to continue your loan application</p>
+
+<!-- FIXED FEE -->
+<div class="amount">
+KES 50
+</div>
+
+<!-- PAY BUTTON -->
+<button onclick="pay()">Pay with M-Pesa</button>
+
+<p class="note">
+You will receive an M-Pesa prompt on your phone
+</p>
+
+</div>
+
+<script>
+
+// GET DATA FROM NEXT PAGE
+let phone = localStorage.getItem("phone");
+let name = localStorage.getItem("firstName");
+
+// SHOW NAME
+document.getElementById("name").innerText = name ? name : "Customer";
+
+// CHECK PHONE EXISTS
+if(!phone){
+    alert("Phone not found. Redirecting back.");
+    window.location.href = "nextpage.html";
+}
+
+// M-PESA FUNCTION
+function pay(){
+
+    fetch("http://localhost:3000/stkpush", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            phone: phone,
+            amount: 50
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        alert("Check your phone for M-Pesa prompt");
+
+        // go to next step
+        setTimeout(()=>{
+            window.location.href = "third.html";
+        }, 3000);
+
+    })
+    .catch(err => {
+        alert("Payment failed. Try again.");
+    });
+
+}
+
+</script>
+
+</body>
+</html>
