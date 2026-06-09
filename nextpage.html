@@ -413,10 +413,7 @@ document.getElementById("loanForm")
 
     submitBtn.disabled = true;
 
-    submitBtn.innerHTML = `
-        <span class="loader"></span>
-        Submitting Application...
-    `;
+    submitBtn.innerHTML = "Checking details...";
 
     // GET VALUES
     let firstName = document.getElementById("firstName").value;
@@ -430,12 +427,75 @@ document.getElementById("loanForm")
     let amount = document.getElementById("amount").value;
     let purpose = document.getElementById("purpose").value;
 
-    // SAVE TO LOCAL STORAGE
+    /* ===========================
+       CHECK EXISTING PHONE
+    =========================== */
+
+    const { data: phoneData } = await supabaseClient
+    .from("applications")
+    .select("phone")
+    .eq("phone", phone);
+
+    if(phoneData.length > 0){
+
+        alert("Phone Number Already Exists");
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Submit Loan Application";
+
+        return;
+    }
+
+    /* ===========================
+       CHECK EXISTING EMAIL
+    =========================== */
+
+    const { data: emailData } = await supabaseClient
+    .from("applications")
+    .select("email")
+    .eq("email", email);
+
+    if(emailData.length > 0){
+
+        alert("Email Already Exists");
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Submit Loan Application";
+
+        return;
+    }
+
+    /* ===========================
+       CHECK EXISTING ID
+    =========================== */
+
+    const { data: idData } = await supabaseClient
+    .from("applications")
+    .select("id_number")
+    .eq("id_number", idNumber);
+
+    if(idData.length > 0){
+
+        alert("ID Number Already Exists");
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Submit Loan Application";
+
+        return;
+    }
+
+    /* ===========================
+       SAVE LOCAL STORAGE
+    =========================== */
+
     localStorage.setItem("firstName", firstName);
     localStorage.setItem("phone", phone);
     localStorage.setItem("amount", amount);
 
-    // INSERT TO SUPABASE
+    /* ===========================
+       INSERT DATA
+    =========================== */
+
     const { error } = await supabaseClient
     .from("applications")
     .insert([
@@ -453,10 +513,9 @@ document.getElementById("loanForm")
         }
     ]);
 
-    // ERROR
     if(error){
 
-        alert("❌ Failed to submit application");
+        alert("Failed to submit application");
 
         console.log(error);
 
@@ -467,16 +526,13 @@ document.getElementById("loanForm")
         return;
     }
 
-    // SUCCESS
-    document.getElementById("successMessage").style.display = "block";
+    /* ===========================
+       SUCCESS
+    =========================== */
 
-    submitBtn.innerHTML = "✅ Submitted Successfully";
+    alert("✅ Application Submitted Successfully");
 
-    setTimeout(() => {
-
-        window.location.href = "loading.html";
-
-    }, 2000);
+    window.location.href = "loading.html";
 
 });
 
