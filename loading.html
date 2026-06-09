@@ -94,15 +94,88 @@ p{
 </div>
 
 <!-- ✅ YOUR SCRIPT ADDED HERE -->
-<script>
-let phone = localStorage.getItem("phone");
-let amount = localStorage.getItem("amount");
 
-console.log("Phone:", phone);
-console.log("Amount:", amount);
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Processing Loan</title>
 
-<!-- REDIRECT TO PAY PAGE -->
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    font-family:Arial;
+    color:white;
+    flex-direction:column;
+}
+
+.loader{
+    width:80px;
+    height:80px;
+    border:6px solid rgba(255,255,255,0.3);
+    border-top:6px solid white;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-bottom:20px;
+}
+
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+
+h1{
+    margin:10px 0;
+}
+
+.text{
+    font-size:14px;
+    opacity:0.9;
+}
+
+.progress{
+    margin-top:20px;
+    width:250px;
+    height:10px;
+    background:rgba(255,255,255,0.3);
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.bar{
+    height:100%;
+    width:0%;
+    background:white;
+    animation:load 5s forwards;
+}
+
+@keyframes load{
+    0%{width:0%;}
+    100%{width:100%;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="loader"></div>
+
+<h1>Processing Loan...</h1>
+
+<div class="text">Please wait while we verify your details</div>
+
+<div class="progress">
+    <div class="bar"></div>
+</div>
+
 <script>
 setTimeout(() => {
     window.location.href = "third.html"

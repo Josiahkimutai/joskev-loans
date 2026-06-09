@@ -6,8 +6,9 @@
 
 <title>OTP Verification - Joskev Loans</title>
 
-<style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<style>
 *{
     margin:0;
     padding:0;
@@ -47,48 +48,22 @@ body{
     margin:0 auto 20px;
 }
 
-h1{
-    color:#0056d2;
-    margin-bottom:10px;
-}
+h1{ color:#0056d2; }
 
-p{
-    color:#666;
-    margin-bottom:25px;
-    line-height:1.6;
-}
+p{ color:#666; margin-bottom:20px; }
 
-.phone{
-    color:#16c47f;
-    font-weight:bold;
-}
+.phone{ color:#16c47f; font-weight:bold; }
 
 .input-box{
-    margin-bottom:18px;
+    margin-bottom:15px;
     text-align:left;
-}
-
-.input-box label{
-    display:block;
-    margin-bottom:8px;
-    font-size:14px;
-    color:#444;
-    font-weight:600;
 }
 
 .input-box input{
     width:100%;
-    padding:15px;
+    padding:14px;
     border:1px solid #ddd;
-    border-radius:12px;
-    outline:none;
-    font-size:16px;
-    transition:0.3s;
-}
-
-.input-box input:focus{
-    border-color:#0056d2;
-    box-shadow:0 0 5px rgba(0,86,210,0.2);
+    border-radius:10px;
 }
 
 button{
@@ -100,33 +75,12 @@ button{
     color:white;
     font-size:16px;
     cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:translateY(-2px);
 }
 
 .message{
-    margin-top:20px;
-    font-size:14px;
+    margin-top:15px;
     font-weight:bold;
 }
-
-.success{
-    color:#16c47f;
-}
-
-.error{
-    color:red;
-}
-
-.note{
-    margin-top:15px;
-    color:#888;
-    font-size:13px;
-}
-
 </style>
 </head>
 
@@ -134,70 +88,57 @@ button:hover{
 
 <div class="card">
 
-<div class="icon">
-🔐
-</div>
+<div class="icon">🔐</div>
 
 <h1>Verify Your Account</h1>
 
 <p>
-Enter the OTP sent to
-<br>
+Enter OTP sent to<br>
 <span class="phone" id="phoneText"></span>
 </p>
 
 <div class="input-box">
-<label>OTP Code *</label>
-<input type="text" id="otp" maxlength="6" placeholder="Enter OTP">
+<input type="text" id="otp" placeholder="OTP Code">
 </div>
 
 <div class="input-box">
-<label>Create Password *</label>
-<input type="password" id="password" placeholder="Create password">
+<input type="password" id="password" placeholder="Create Password">
 </div>
 
 <div class="input-box">
-<label>Confirm Password *</label>
-<input type="password" id="confirmPassword" placeholder="Confirm password">
+<input type="password" id="confirmPassword" placeholder="Confirm Password">
 </div>
 
-<button onclick="verifyDetails()">
-Verify & Continue
-</button>
+<button onclick="verifyDetails()">Verify & Continue</button>
 
 <div class="message" id="message"></div>
 
-<div class="note">
-Demo OTP: 123456
 </div>
+
 <script>
+/* SHOW PHONE */
+const phone = localStorage.getItem("phone");
+document.getElementById("phoneText").innerText = phone || "Not found";
+
 /* SUPABASE */
 const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTU"
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU"
 
-const supabaseClient = supabase.createClient(
-    supabaseUrl,
-    supabaseKey
-);
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* VERIFY FUNCTION */
+/* VERIFY */
 async function verifyDetails(){
 
-    let otp =
-    document.getElementById("otp").value;
+    let otp = document.getElementById("otp").value;
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+    let message = document.getElementById("message");
 
-    let password =
-    document.getElementById("password").value;
+    if(!phone){
+        message.innerHTML = "❌ Phone not found";
+        return;
+    }
 
-    let confirmPassword =
-    document.getElementById("confirmPassword").value;
-
-    let message =
-    document.getElementById("message");
-
-    const phone = localStorage.getItem("phone");
-
-    /* CHECK OTP */
     if(otp !== "123456"){
         message.innerHTML = "❌ Incorrect OTP";
         return;
@@ -215,12 +156,12 @@ async function verifyDetails(){
 
     /* UPDATE SUPABASE */
     const { error } = await supabaseClient
-    .from("applications")
-    .update({
-        password: password,
-        is_verified: true
-    })
-    .eq("phone", phone);
+        .from("applications")
+        .update({
+            password: password,
+            is_verified: true
+        })
+        .eq("phone", phone);
 
     if(error){
         console.log(error);
@@ -230,11 +171,12 @@ async function verifyDetails(){
 
     message.innerHTML = "✅ Verified Successfully";
 
+    /* FIXED LOADING REDIRECT */
     setTimeout(() => {
         window.location.href = "loading.html";
     }, 2000);
 }
-
+</script>
 
 </body>
 </html>
