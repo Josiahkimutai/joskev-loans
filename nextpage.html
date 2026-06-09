@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Application - Joskev Loans</title>
+
+<style>
+
+/* RESET */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+/* HEADER */
+
+header{
+    width:100%;
+    background:white;
+    padding:18px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 12px rgba(0,0,0,0.08);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#0056d2;
+}
+
+.back-btn{
+    text-decoration:none;
+    background:#0056d2;
+    color:white;
+    padding:12px 22px;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    background:#003f9e;
+}
+
+/* CONTAINER */
+
+.container{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:60px 20px;
+}
+
+/* FORM BOX */
+
+.form-box{
+    width:100%;
+    max-width:550px;
+    background:white;
+    padding:45px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.form-box h1{
+    text-align:center;
+    color:#0056d2;
+    margin-bottom:10px;
+    font-size:38px;
+}
+
+.form-box p{
+    text-align:center;
+    color:#666;
+    margin-bottom:35px;
+}
+
+/* INPUTS */
+
+.input-box{
+    margin-bottom:22px;
+}
+
+.input-box label{
+    display:block;
+    margin-bottom:10px;
+    color:#444;
+    font-weight:bold;
+}
+
+.input-box input,
+.input-box select,
+.input-box textarea{
+    width:100%;
+    padding:15px;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    font-size:16px;
+    transition:0.3s;
+    outline:none;
+}
+
+.input-box input:focus,
+.input-box select:focus,
+.input-box textarea:focus{
+    border-color:#0056d2;
+    box-shadow:0 0 5px rgba(0,86,210,0.3);
+}
+
+/* TWO COLUMNS */
+
+.row{
+    display:flex;
+    gap:15px;
+}
+
+.row .input-box{
+    flex:1;
+}
+
+/* BUTTON */
+
+.submit-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    background:#0056d2;
+    color:white;
+    font-size:18px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+    margin-top:10px;
+}
+
+.submit-btn:hover{
+    background:#003f9e;
+    transform:translateY(-2px);
+}
+
+/* INFO BOX */
+
+.info-box{
+    margin-top:30px;
+    background:#eef4ff;
+    padding:20px;
+    border-radius:12px;
+}
+
+.info-box h3{
+    color:#0056d2;
+    margin-bottom:10px;
+}
+
+.info-box p{
+    text-align:left;
+    margin-bottom:8px;
+    color:#555;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+header{
+    flex-direction:column;
+    gap:15px;
+}
+
+.form-box{
+    padding:30px 20px;
+}
+
+.form-box h1{
+    font-size:30px;
+}
+
+.row{
+    flex-direction:column;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+<div class="logo">
+Joskev Loans
+</div>
+
+<a href="first.html" class="back-btn">
+← Back Home
+</a>
+
+</header>
+
+<!-- FORM SECTION -->
+
+<section class="container">
+
+<div class="form-box">
+
+<h1>Loan Application</h1>
+
+<p>
+Fill in the form below to apply for your loan online.
+</p>
+
+<form>
+
+<div class="row">
+
+<div class="input-box">
+<label>First Name</label>
+<input type="text" placeholder="Enter first name">
+</div>
+
+<div class="input-box">
+<label>Last Name</label>
+<input type="text" placeholder="Enter last name">
+</div>
+
+</div>
+
+<div class="input-box">
+<label>Phone Number</label>
+<input type="tel" placeholder="07XXXXXXXX">
+</div>
+
+<div class="input-box">
+<label>Email Address</label>
+<input type="email" placeholder="example@gmail.com">
+</div>
+
+<div class="input-box">
+<label>ID Number</label>
+<input type="number" placeholder="Enter ID number">
+</div>
+
+<div class="input-box">
+<label>Date of Birth</label>
+<input type="date">
+</div>
+```
+
+<div class="row">
+
+<div class="input-box">
+<label>Loan Amount</label>
+<select>
+<option>KES 1,000</option>
+<option>KES 5,000</option>
+<option>KES 10,000</option>
+<option>KES 20,000</option>
+<option>KES 50,000</option>
+<option>KES 100,000</option>
+<option>KES 200,000</option>
+</select>
+</div>
+
+<div class="input-box">
+<label>Repayment Period</label>
+<select>
+<option>7 Days</option>
+<option>14Days</option>
+<option>30 Days</option>
+<option>60 Days</option>
+</select>
+</div>
+
+</div>
+
+<div class="input-box">
+<label>Employment Status</label>
+<select>
+<option>Employed</option>
+<option>Self Employed</option>
+<option>Business Owner</option>
+<option>Student</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="input-box">
+<label>Additional Information</label>
+<textarea rows="4" placeholder="Optional message"></textarea>
+</div>
+
+<button type="submit" class="submit-btn">
+Submit Loan Application
+</button>
+
+</form>
+
+<!-- INFO -->
+
+<div class="info-box">
+
+<h3>Important Information</h3>
+
+<p>✔ Fast approval within 15 minutes</p>
+
+<p>✔ Money sent directly to M-Pesa</p>
+
+<p>✔ Secure and confidential process</p>
+
+<p>✔ Flexible repayment options available</p>
+
+</div>
+
+</div>
+
+</section>
+
+</body>
+</html>
+```

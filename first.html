@@ -1,0 +1,713 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joskev Loans</title>
+
+<style>
+
+/* GOOGLE STYLE RESET */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+/* HEADER */
+
+header{
+    width:100%;
+    background:#ffffff;
+    padding:18px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#0056d2;
+}
+
+nav{
+    display:flex;
+    gap:25px;
+}
+
+nav a{
+    text-decoration:none;
+    color:#333;
+    font-size:15px;
+    transition:0.3s;
+}
+
+nav a:hover{
+    color:#0056d2;
+}
+
+.contact{
+    text-align:right;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.login-btn{
+    background:#0056d2;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+    margin-left:15px;
+}
+
+.login-btn:hover{
+    background:#003f9e;
+}
+
+/* HERO */
+
+.hero{
+    padding:70px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:50px;
+}
+
+.hero-text{
+    flex:1;
+    min-width:320px;
+}
+
+.hero-text h1{
+    font-size:52px;
+    line-height:1.2;
+    margin-bottom:20px;
+    color:#111;
+}
+
+.hero-text p{
+    font-size:18px;
+    color:#666;
+    line-height:1.7;
+}
+
+/* LOAN CARD */
+
+.loan-card{
+    width:420px;
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.loan-card h2{
+    margin-bottom:25px;
+    color:#0056d2;
+}
+
+.loan-box label{
+    display:block;
+    margin-bottom:10px;
+    color:#555;
+}
+
+.amount{
+    background:#eef3ff;
+    padding:18px;
+    border-radius:10px;
+    font-size:34px;
+    font-weight:bold;
+    color:#111;
+}
+
+.range{
+    width:100%;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+.loan-info{
+    margin-top:18px;
+    color:#555;
+    line-height:1.6;
+}
+
+.settlement{
+    margin-top:25px;
+    background:#e8f0ff;
+    padding:18px;
+    border-radius:10px;
+    font-size:24px;
+    font-weight:bold;
+    color:#0056d2;
+}
+
+.apply-btn{
+    display:block;
+    width:100%;
+    margin-top:30px;
+    padding:16px;
+    text-align:center;
+    background:#0056d2;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.apply-btn:hover{
+    background:#003f9e;
+    transform:translateY(-2px);
+}
+
+/* ADVANTAGES */
+
+.advantages{
+    background:white;
+    padding:80px 8%;
+}
+
+.advantages h2{
+    text-align:center;
+    margin-bottom:50px;
+    font-size:40px;
+}
+
+.cards{
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.card{
+    flex:1;
+    min-width:260px;
+    background:#f5f8ff;
+    padding:35px;
+    border-radius:15px;
+    text-align:center;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+}
+
+.card h3{
+    margin:18px 0;
+    color:#0056d2;
+    font-size:25px;
+}
+
+.card p{
+    color:#666;
+    line-height:1.7;
+}
+
+/* FOOTER */
+
+footer{
+    background:#0056d2;
+    color:white;
+    text-align:center;
+    padding:25px;
+    font-size:15px;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+header{
+    flex-direction:column;
+    gap:15px;
+}
+
+nav{
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.hero{
+    flex-direction:column;
+}
+
+.loan-card{
+    width:100%;
+}
+
+.hero-text h1{
+    font-size:38px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+<div class="logo">
+Joskev Loans
+</div>
+
+<nav>
+<a href="#">Our Advantages</a>
+<a href="#">How to Borrow</a>
+<a href="#">Loan App</a>
+<a href="#">Promotions & News</a>
+</nav>
+
+<div class="contact">
+<div><strong>0709-029-000</strong></div>
+<div>Mon-Sun: 8am - 6pm</div>
+</div>
+
+<button class="login-btn">
+Log in
+</button>
+
+</header>
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+<div class="hero-text">
+
+<h1>
+Get Your Loan Online Within 15 Minutes
+</h1>
+
+<p>
+Fast, secure and reliable mobile loans directly to your M-Pesa account with instant approval and flexible repayment plans.
+</p>
+
+</div>
+
+<!-- LOAN CARD -->
+
+<div class="loan-card">
+
+<h2>
+Select Loan Amount
+</h2>
+
+<div class="loan-box">
+
+<label>
+Loan Amount
+</label>
+
+<div class="amount">
+KES 8,000
+</div>
+
+<input
+type="range"
+min="1000"
+max="200000"
+value="8000"
+class="range"
+>
+
+</div>
+
+<div class="loan-info">
+For repeat borrowers: KES 1,000 - KES 200,000
+</div>
+
+<div class="settlement">
+Settlement Amount: KES 8,600
+</div>
+
+<a href="nextpage.html" class="apply-btn">
+Apply Now
+</a>
+
+</div>
+
+</section>
+
+<!-- ADVANTAGES -->
+
+<section class="advantages">
+
+<h2>
+Why Choose Joskev Loans
+</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>
+Fast Approval
+</h3>
+
+<p>
+Receive instant loan approvals within minutes without long paperwork.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+Secure Platform
+</h3>
+
+<p>
+Your personal and financial information is fully protected and encrypted.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+Available 24/7
+</h3>
+
+<p>
+Apply anytime and anywhere using your smartphone or computer.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+© 2026 Joskev Loans. All Rights Reserved.
+</footer>
+
+</body>
+</html>
+```
+```html
+<!-- EXTRA FEATURES -->
+
+<section class="advantages">
+
+<h2>Why Choose Joskev Loans</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Direct M-Pesa Transfer</h3>
+
+<p>
+We transfer money directly to your M-Pesa account quickly and securely.
+</p>
+
+</div>
+
+<div class="card">
+<h3>Flexible Repayment</h3>
+
+<p>
+We give customers the opportunity to prolong the loan repayment period.
+</p>
+
+</div>
+
+<div class="card">
+<h3>Quick Approval</h3>
+
+<p>
+Simple and fast approval process within 15 minutes.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- HOW TO BORROW -->
+
+<section class="how-borrow">
+
+<h2>How to Borrow Money</h2>
+
+<div class="borrow-steps">
+
+<div class="step">
+<h1>1</h1>
+
+<h3>Submit your application online</h3>
+
+<p>
+You can leave a request by filling out the application form.
+</p>
+
+</div>
+
+<div class="step">
+
+<h1>2</h1>
+
+<h3>Wait for the decision</h3>
+
+<p>
+The decision is made in just 15 minutes.
+</p>
+
+</div>
+
+<div class="step">
+
+<h1>3</h1>
+
+<h3>Receive money</h3>
+
+<p>
+The transaction usually takes just 1 minute.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- APPLY SECTION -->
+
+<section class="apply-section">
+
+<h2>Apply for a Loan</h2>
+
+<p>
+Get instant loans online within 15 minutes with Joskev Loans.
+</p>
+
+<a href="nextpage.html" class="apply-btn">
+Apply Now
+</a>
+
+</section>
+
+<!-- REVIEWS -->
+
+<section class="reviews">
+
+<h2>Customer Reviews</h2>
+
+<div class="cards">
+
+<div class="card">
+<p>
+"Fast service and easy application process."
+</p>
+
+<h3>- Brian M.</h3>
+
+</div>
+
+<div class="card">
+<p>
+"I received money directly to my M-Pesa account in minutes."
+</p>
+
+<h3>- Mary W.</h3>
+
+</div>
+
+<div class="card">
+<p>
+"Reliable online loan service with excellent support."
+</p>
+
+<h3>- Kevin O.</h3>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section class="about">
+
+<h2>Borrow Loan Online</h2>
+
+<h3>Looking for a quick loan?</h3>
+
+<p>
+Get instant loans online within 15 minutes with Joskev Loans.
+</p>
+
+<h3>Who are we?</h3>
+
+<p>
+Joskev Loans is one of the best services for online loans in Kenya, directly disbursed to M-Pesa. Unlike other loan services, we offer a simple and quick solution without leaving home in just 15 minutes with only one document needed.
+</p>
+
+<h3>How to apply for a loan?</h3>
+
+<p>
+You just need to visit our website, register online, and start applying for loans.
+</p>
+
+<h3>Why should you borrow from Joskev Loans?</h3>
+
+<p>
+You can apply anytime and anywhere through our website and get approved within 15 minutes. We guarantee confidentiality and protection of your data while our customer service team always looks for solutions in difficult situations.
+</p>
+
+<p>
+Use our website and get extra money whenever you need it.
+</p>
+
+</section>
+
+<!-- LOAN RATES -->
+
+<section class="loan-rates">
+
+<h2>Loan Rates and Fees</h2>
+
+<p><strong>Loan Amounts:</strong> Ksh 1,000 to Ksh 200,000</p>
+
+<p><strong>Minimum repayment period:</strong> 61 days including loan extension</p>
+
+<p><strong>Maximum repayment period:</strong> 365 days including loan extension</p>
+
+<p><strong>Minimum APR:</strong> 3.65%</p>
+
+<p><strong>Maximum APR:</strong> 803%</p>
+
+<br>
+
+<h3>Representative Example - Minimum Interest</h3>
+
+<p>
+If you apply for Ksh 10,000 loan for 61 days under 1.0% per day, the total repayment amount will be Ksh 16,100.
+</p>
+
+<br>
+
+<h3>Representative Example - Maximum Interest</h3>
+
+<p>
+If you apply for Ksh 10,000 loan for 61 days under 2.2% per day, the total repayment amount will be Ksh 23,420.
+</p>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="contact-section">
+
+<div class="contact-card">
+
+<h3>📞 Support Service</h3>
+
+<p>+254 709 029 000</p>
+
+<p>Mon-Sun: 8am - 6pm</p>
+
+</div>
+
+<div class="contact-card">
+
+<h3>📧 Mail Address</h3>
+
+<p>customer@lendplus.ke</p>
+
+</div>
+
+<div class="contact-card">
+
+<h3>⏰ Application Acceptance</h3>
+
+<p>24/7</p>
+
+</div>
+
+</section>
+
+<!-- ADDRESS -->
+
+<section class="address">
+
+<h2>Office Address</h2>
+
+<p>P.O BOX 30834 G.P.O NAIROBI</p>
+
+<p>COUNTY: NAIROBI</p>
+
+<p>DISTRICT: WESTLANDS DISTRICT</p>
+
+<p>LOCALITY: WESTLANDS</p>
+
+<p>STREET: RHAPTA ROAD</p>
+
+<p>BUILDING: RHAPTA HEIGHTS</p>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+<p>
+© 2021-2026 ALL RIGHTS RESERVED.
+</p>
+
+<p>
+AVENTUS TECHNOLOGY LIMITED IS A COMPANY DULY INCORPORATED AND REGISTERED UNDER THE LAWS OF KENYA.
+</p>
+
+<br>
+
+<div class="footer-links">
+
+<a href="#">Privacy Policy</a>
+
+<a href="#">Terms and Conditions</a>
+
+<a href="#">Account Cancellation</a>
+
+<a href="#">Referral Bonuses</a>
+
+</div>
+
+<br>
+
+<p>
+Licensed & Regulated by CBK 2025
+</p>
+
+</footer>
+```
