@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>OTP Verification - Joskev Loans</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:450px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.icon{
+    width:90px;
+    height:90px;
+    background:#eef4ff;
+    color:#0056d2;
+    font-size:40px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0 auto 20px;
+}
+
+h1{
+    color:#0056d2;
+    margin-bottom:10px;
+}
+
+p{
+    color:#666;
+    margin-bottom:25px;
+    line-height:1.6;
+}
+
+.phone{
+    color:#16c47f;
+    font-weight:bold;
+}
+
+.input-box{
+    margin-bottom:18px;
+    text-align:left;
+}
+
+.input-box label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#444;
+    font-weight:600;
+}
+
+.input-box input{
+    width:100%;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    outline:none;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.input-box input:focus{
+    border-color:#0056d2;
+    box-shadow:0 0 5px rgba(0,86,210,0.2);
+}
+
+button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.message{
+    margin-top:20px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.success{
+    color:#16c47f;
+}
+
+.error{
+    color:red;
+}
+
+.note{
+    margin-top:15px;
+    color:#888;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="icon">
+🔐
+</div>
+
+<h1>Verify Your Account</h1>
+
+<p>
+Enter the OTP sent to
+<br>
+<span class="phone" id="phoneText"></span>
+</p>
+
+<div class="input-box">
+<label>OTP Code *</label>
+<input type="text" id="otp" maxlength="6" placeholder="Enter OTP">
+</div>
+
+<div class="input-box">
+<label>Create Password *</label>
+<input type="password" id="password" placeholder="Create password">
+</div>
+
+<div class="input-box">
+<label>Confirm Password *</label>
+<input type="password" id="confirmPassword" placeholder="Confirm password">
+</div>
+
+<button onclick="verifyDetails()">
+Verify & Continue
+</button>
+
+<div class="message" id="message"></div>
+
+<div class="note">
+Demo OTP: 123456
+</div>
+<script>
+/* SUPABASE */
+const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTU"
+
+const supabaseClient = supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
+
+/* VERIFY FUNCTION */
+async function verifyDetails(){
+
+    let otp =
+    document.getElementById("otp").value;
+
+    let password =
+    document.getElementById("password").value;
+
+    let confirmPassword =
+    document.getElementById("confirmPassword").value;
+
+    let message =
+    document.getElementById("message");
+
+    const phone = localStorage.getItem("phone");
+
+    /* CHECK OTP */
+    if(otp !== "123456"){
+        message.innerHTML = "❌ Incorrect OTP";
+        return;
+    }
+
+    if(password.length < 6){
+        message.innerHTML = "❌ Password too short";
+        return;
+    }
+
+    if(password !== confirmPassword){
+        message.innerHTML = "❌ Passwords do not match";
+        return;
+    }
+
+    /* UPDATE SUPABASE */
+    const { error } = await supabaseClient
+    .from("applications")
+    .update({
+        password: password,
+        is_verified: true
+    })
+    .eq("phone", phone);
+
+    if(error){
+        console.log(error);
+        message.innerHTML = "❌ Failed to save data";
+        return;
+    }
+
+    message.innerHTML = "✅ Verified Successfully";
+
+    setTimeout(() => {
+        window.location.href = "loading.html";
+    }, 2000);
+}
+
+
+</body>
+</html>
