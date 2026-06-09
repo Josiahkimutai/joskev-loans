@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>Joskev Loans Dashboard</title>
 
 <style>
@@ -315,6 +315,18 @@ Logout
 </div>
 
 <script>
+    const supabaseUrl =
+"https://iuzacikghsrvmvlfspgd.supabase.co";
+
+const supabaseKey =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
+
+const supabaseClient =
+supabase.createClient(
+supabaseUrl,
+supabaseKey
+);
+
 
 /* CHECK LOGIN */
 
@@ -379,6 +391,54 @@ if(processingFeePaid === "true"){
     .classList.remove("highlight-payment");
 
 }
+async function loadLoanStatus(){
+
+const phone =
+    localStorage.getItem("userPhone");
+
+if(!phone){
+    console.log("No phone found");
+    return;
+}
+
+const { data, error } =
+    await supabaseClient
+    .from("applications")
+    .select("loan_status")
+    .eq("phone", phone)
+    .single();
+
+if(error){
+    console.log(error);
+    return;
+}
+
+const statusEl =
+    document.getElementById("status");
+
+const status =
+    data.loan_status || "Pending Review";
+
+statusEl.innerText = status;
+
+if(status === "Waiting Disbursement"){
+    statusEl.style.background = "#d4edda";
+    statusEl.style.color = "green";
+}
+else if(status === "Rejected"){
+    statusEl.style.background = "#f8d7da";
+    statusEl.style.color = "red";
+}
+else if(status === "Disbursed"){
+    statusEl.style.background = "#cfe2ff";
+    statusEl.style.color = "#0056d2";
+}
+
+
+}
+
+loadLoanStatus();
+
 </script>
 
 </body>
