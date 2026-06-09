@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Loan Application - Joskev Loans</title>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
@@ -12,60 +16,146 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI', sans-serif;
+    font-family:'Segoe UI',sans-serif;
 }
 
 body{
-    background:linear-gradient(135deg,#e9f1ff,#f4f7fb);
+    background:linear-gradient(135deg,#eef4ff,#f8fbff);
     min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+/* HEADER */
+header{
+    width:100%;
+    background:white;
+    padding:18px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#0056d2;
+}
+
+.back-btn{
+    text-decoration:none;
+    background:#0056d2;
+    color:white;
+    padding:12px 20px;
+    border-radius:10px;
+    transition:0.3s;
+    font-size:15px;
+}
+
+.back-btn:hover{
+    background:#003f9e;
+}
+
+/* CONTAINER */
+.container{
+    flex:1;
     display:flex;
     justify-content:center;
     align-items:center;
+    padding:40px 20px;
 }
 
 /* CARD */
 .card{
     width:100%;
-    max-width:700px;
+    max-width:800px;
     background:white;
-    padding:40px;
-    border-radius:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    border-radius:22px;
+    padding:45px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+    animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 /* TITLE */
-h1{
+.card h1{
     text-align:center;
     color:#0056d2;
+    margin-bottom:10px;
+    font-size:38px;
 }
 
-p{
+.card p{
     text-align:center;
     color:#666;
+    margin-bottom:30px;
+}
+
+/* SUCCESS MESSAGE */
+.success-message{
+    background:#e8fff1;
+    color:#12a150;
+    border:1px solid #b7f3cd;
+    padding:16px;
+    border-radius:12px;
+    text-align:center;
     margin-bottom:20px;
+    display:none;
+    font-weight:bold;
+    font-size:16px;
 }
 
 /* GRID */
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:15px;
+    gap:18px;
 }
 
-/* INPUT */
-input, select, textarea{
-    width:100%;
-    padding:12px;
+/* INPUTS */
+.input-box{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-box label{
+    margin-bottom:8px;
+    color:#444;
+    font-size:14px;
+    font-weight:600;
+}
+
+.input-box input,
+.input-box select,
+.input-box textarea{
+    padding:14px;
     border:1px solid #ddd;
-    border-radius:10px;
+    border-radius:12px;
     outline:none;
+    font-size:15px;
+    background:#fafafa;
+    transition:0.3s;
 }
 
-input:focus, select:focus{
+.input-box input:focus,
+.input-box select:focus,
+.input-box textarea:focus{
     border-color:#0056d2;
+    background:white;
+    box-shadow:0 0 8px rgba(0,86,210,0.15);
 }
 
-/* FULL */
 .full{
     grid-column:1 / -1;
 }
@@ -73,32 +163,77 @@ input:focus, select:focus{
 /* BUTTON */
 button{
     width:100%;
-    margin-top:20px;
-    padding:14px;
-    background:#0056d2;
-    color:white;
+    margin-top:25px;
+    padding:16px;
     border:none;
-    border-radius:10px;
-    font-size:16px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    color:white;
+    font-size:17px;
+    font-weight:bold;
     cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
-    background:#003f9e;
+    transform:translateY(-2px);
 }
 
-/* ERROR */
-.error{
-    color:red;
-    font-size:13px;
-    margin-top:5px;
+button:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+}
+
+/* INFO BOX */
+.info{
+    margin-top:25px;
+    background:#eef4ff;
+    padding:20px;
+    border-radius:14px;
+    line-height:1.8;
+    color:#555;
+    font-size:14px;
+}
+
+/* LOADER */
+.loader{
+    width:20px;
+    height:20px;
+    border:3px solid rgba(255,255,255,0.3);
+    border-top:3px solid white;
+    border-radius:50%;
+    display:inline-block;
+    animation:spin 1s linear infinite;
+    vertical-align:middle;
+    margin-right:10px;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
 }
 
 /* MOBILE */
 @media(max-width:700px){
-    .grid{
-        grid-template-columns:1fr;
-    }
+
+.grid{
+    grid-template-columns:1fr;
+}
+
+.card{
+    padding:30px 20px;
+}
+
+.card h1{
+    font-size:30px;
+}
+
+header{
+    flex-direction:column;
+    gap:15px;
+}
+
 }
 
 </style>
@@ -106,96 +241,242 @@ button:hover{
 
 <body>
 
+<!-- HEADER -->
+<header>
+
+<div class="logo">
+Joskev Loans
+</div>
+
+<a href="index.html" class="back-btn">
+← Back Home
+</a>
+
+</header>
+
+<!-- CONTAINER -->
+<div class="container">
+
 <div class="card">
 
 <h1>Loan Application</h1>
-<p>All fields are required to continue</p>
 
-<form id="loanForm" action="loading.html" method="GET">
+<p>
+Fill in your details to continue
+</p>
+
+<!-- SUCCESS -->
+<div class="success-message" id="successMessage">
+✅ Application Submitted Successfully
+</div>
+
+<!-- FORM -->
+<form id="loanForm">
 
 <div class="grid">
 
-<input type="text" id="firstName" placeholder="First Name">
-<input type="text" id="lastName" placeholder="Last Name">
+<!-- FIRST NAME -->
+<div class="input-box">
+<label>First Name *</label>
+<input type="text" id="firstName" required>
+</div>
 
-<input type="tel" id="phone" placeholder="07XXXXXXXX or 2547XXXXXXXX">
-<input type="email" id="email" placeholder="Email Address">
+<!-- LAST NAME -->
+<div class="input-box">
+<label>Last Name *</label>
+<input type="text" id="lastName" required>
+</div>
 
-<input type="number" id="idNumber" placeholder="ID Number">
-<input type="date" id="dob">
+<!-- PHONE -->
+<div class="input-box">
+<label>Phone Number *</label>
+<input type="tel" id="phone" placeholder="07XXXXXXXX" required>
+</div>
 
-<select id="employment">
-<option value="">Employment Status</option>
+<!-- EMAIL -->
+<div class="input-box">
+<label>Email Address *</label>
+<input type="email" id="email" required>
+</div>
+
+<!-- DOB -->
+<div class="input-box">
+<label>Date of Birth *</label>
+<input type="date" id="dob" required>
+</div>
+
+<!-- ID -->
+<div class="input-box">
+<label>ID Number *</label>
+<input type="number" id="idNumber" required>
+</div>
+
+<!-- EMPLOYMENT -->
+<div class="input-box">
+<label>Employment Status *</label>
+
+<select id="employment" required>
+<option value="">Select</option>
 <option>Employed</option>
 <option>Self Employed</option>
 <option>Business Owner</option>
 <option>Student</option>
-<option>Unemployed</option>
+<option>Other</option>
 </select>
 
-<input type="number" id="income" placeholder="Monthly Income (KES)">
+</div>
 
-<select id="amount">
-<option value="">Loan Amount</option>
+<!-- INCOME -->
+<div class="input-box">
+<label>Monthly Income *</label>
+
+<select id="income" required>
+<option value="">Select Income</option>
+<option value="5000">KES 5,000 - 10,000</option>
+<option value="10000">KES 10,000 - 30,000</option>
+<option value="30000">KES 30,000 - 50,000</option>
+<option value="50000">KES 50,000+</option>
+</select>
+
+</div>
+
+<!-- LOAN AMOUNT -->
+<div class="input-box">
+<label>Loan Amount *</label>
+
+<select id="amount" required>
+<option value="">Select Amount</option>
 <option value="1000">KES 1,000</option>
 <option value="5000">KES 5,000</option>
 <option value="10000">KES 10,000</option>
 <option value="20000">KES 20,000</option>
 <option value="50000">KES 50,000</option>
 <option value="100000">KES 100,000</option>
+<option value="200000">KES 200,000</option>
 </select>
-
-<textarea id="purpose" class="full" placeholder="Purpose of Loan"></textarea>
 
 </div>
 
-<button type="submit">Continue</button>
+<!-- PURPOSE -->
+<div class="input-box full">
+<label>Reason For Loan *</label>
+<textarea id="purpose" rows="4" required></textarea>
+</div>
+
+</div>
+
+<button type="submit" id="submitBtn">
+Submit Loan Application
+</button>
 
 </form>
+
+<!-- INFO -->
+<div class="info">
+
+✔ Fast approval within 15 minutes<br>
+✔ Money sent directly to M-Pesa<br>
+✔ Secure & confidential process<br>
+✔ Flexible repayment options available
+
+</div>
+
+</div>
 
 </div>
 
 <script>
 
-document.getElementById("loanForm").addEventListener("submit", function(e){
+/* ===========================
+SUPABASE CONFIG
+=========================== */
 
-    let firstName = document.getElementById("firstName").value.trim();
-    let lastName = document.getElementById("lastName").value.trim();
-    let phone = document.getElementById("phone").value.trim();
-    let email = document.getElementById("email").value.trim();
-    let idNumber = document.getElementById("idNumber").value.trim();
+const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
+
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU"
+
+const supabaseClient = supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
+
+/* ===========================
+FORM SUBMIT
+=========================== */
+
+document.getElementById("loanForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const submitBtn = document.getElementById("submitBtn");
+
+    submitBtn.disabled = true;
+
+    submitBtn.innerHTML = `
+        <span class="loader"></span>
+        Submitting Application...
+    `;
+
+    // GET VALUES
+    let firstName = document.getElementById("firstName").value;
+    let lastName = document.getElementById("lastName").value;
+    let phone = document.getElementById("phone").value;
+    let email = document.getElementById("email").value;
     let dob = document.getElementById("dob").value;
+    let idNumber = document.getElementById("idNumber").value;
     let employment = document.getElementById("employment").value;
     let income = document.getElementById("income").value;
     let amount = document.getElementById("amount").value;
+    let purpose = document.getElementById("purpose").value;
 
-    // PHONE VALIDATION
-    let phonePattern = /^(07\d{8}|2547\d{8})$/;
-
-    if(!firstName || !lastName || !phone || !email || !idNumber || !dob || !employment || !income || !amount){
-        alert("⚠ Please fill ALL fields before continuing.");
-        e.preventDefault();
-        return;
-    }
-
-    if(!phonePattern.test(phone)){
-        alert("⚠ Enter a valid Kenyan number (07XXXXXXXX or 2547XXXXXXXX)");
-        e.preventDefault();
-        return;
-    }
-
-    if(income < 1000){
-        alert("⚠ Monthly income must be at least KES 1,000");
-        e.preventDefault();
-        return;
-    }
-
-    // SAVE DATA
+    // SAVE TO LOCAL STORAGE
     localStorage.setItem("firstName", firstName);
     localStorage.setItem("phone", phone);
     localStorage.setItem("amount", amount);
-    localStorage.setItem("employment", employment);
-    localStorage.setItem("income", income);
+
+    // INSERT TO SUPABASE
+    const { error } = await supabaseClient
+    .from("applications")
+    .insert([
+        {
+            first_name:firstName,
+            last_name:lastName,
+            phone:phone,
+            email:email,
+            dob:dob,
+            id_number:idNumber,
+            employment:employment,
+            income:income,
+            amount:amount,
+            purpose:purpose
+        }
+    ]);
+
+    // ERROR
+    if(error){
+
+        alert("❌ Failed to submit application");
+
+        console.log(error);
+
+        submitBtn.disabled = false;
+
+        submitBtn.innerHTML = "Submit Loan Application";
+
+        return;
+    }
+
+    // SUCCESS
+    document.getElementById("successMessage").style.display = "block";
+
+    submitBtn.innerHTML = "✅ Submitted Successfully";
+
+    setTimeout(() => {
+
+        window.location.href = "loading.html";
+
+    }, 2000);
 
 });
 
