@@ -174,33 +174,29 @@ button{
 <script>
 const API = "https://mpesa-backend-k7ly.onrender.com";
 
-const phone = localStorage.getItem("phone");
-const name = localStorage.getItem("firstName");
+const rawPhone = localStorage.getItem("phone");
+const name = localStorage.getItem("firstName") || "Customer";
 
 const nameEl = document.getElementById("name");
 const payBtn = document.getElementById("payBtn");
 const resendBtn = document.getElementById("resendBtn");
 const statusEl = document.getElementById("status");
 
-nameEl.innerText = name || "Customer";
+nameEl.innerText = name;
+
+let paymentInterval = null;
+let pollingStartedAt = null;
+const POLL_INTERVAL = 3000;
+const POLL_TIMEOUT = 120000; // 2 minutes
 
 function formatPhone(phone) {
     if (!phone) return "";
-
     phone = phone.trim();
 
-    if (phone.startsWith("0")) {
-        return "254" + phone.substring(1);
-    }
-
-    if (phone.startsWith("+254")) {
-        return phone.substring(1);
-    }
-
+    if (phone.startsWith("0")) return "254" + phone.substring(1);
+    if (phone.startsWith("+254")) return phone.substring(1);
     return phone;
 }
-
-let paymentInterval = null;
 
 function stopChecking() {
     if (paymentInterval) {
@@ -209,8 +205,41 @@ function stopChecking() {
     }
 }
 
+function setStatus(message, type = "info") {
+    statusEl.className = "status " + type;
+    statusEl.innerText = message;
+}
+
+function resetButtons() {
+    payBtn.disabled = false;
+    payBtn.innerText = "Pay with M-Pesa";
+    resendBtn.style.display = "block";
+}
+
+function saveReceiptData(payment, checkoutRequestID) {
+    localStorage.setItem("paymentDate", payment?.created_at || new Date().toLocaleString());
+    localStorage.setItem("paidAmount", payment?.amount || "1");
+    localStorage.setItem("checkoutRequestID", checkoutRequestID || payment?.checkout_request_id || "");
+    localStorage.setItem("paymentStatus", payment?.status || "SUCCESS");
+
+    if (payment?.mpesa_receipt) {
+        localStorage.setItem("mpesaReceipt", payment.mpesa_receipt);
+    }
+
+    if (payment?.phone) {
+        localStorage.setItem("phone", payment.phone);
+    } else if (rawPhone) {
+        localStorage.setItem("phone", rawPhone);
+    }
+
+    if (name) {
+        localStorage.setItem("firstName", name);
+    }
+}
+
 function checkPayment(checkoutRequestID) {
     stopChecking();
+    pollingStartedAt = Date.now();
 
     paymentInterval = setInterval(async () => {
         try {
@@ -220,66 +249,64 @@ function checkPayment(checkoutRequestID) {
             console.log("PAYMENT STATUS:", data);
 
             // SUCCESS
-            if (data.status === "SUCCESS") {
-             stopChecking();
+            if (data.status === "SUCCESS" && data.found && data.payment) {
+                stopChecking();
 
-// save payment info safely
-localStorage.setItem("paymentDate", new Date().toLocaleString());
+                saveReceiptData(data.payment, checkoutRequestID);
 
-if (phone) localStorage.setItem("phone", phone);
-if (data.mpesa_receipt) localStorage.setItem("mpesaReceipt", data.mpesa_receipt);
+                setStatus("Payment successful! Redirecting to your receipt...", "success");
+                payBtn.innerText = "Payment Confirmed";
 
-// fixed amount since you charge 1
-localStorage.setItem("paidAmount", "1");
+                setTimeout(() => {
+                    window.location.href = "receipt.html";
+                }, 1500);
 
-statusEl.className = "status success";
-statusEl.innerText = "Payment successful! Redirecting...";
-
-setTimeout(() => {
-    window.location.href = "receipt.html";
-}, 1500);
-
-return;
+                return;
             }
 
             // FAILED
             if (data.status === "FAILED") {
                 stopChecking();
+                setStatus(data.message || "Payment failed.", "error");
+                resetButtons();
+                return;
+            }
 
-                statusEl.className = "status error";
-                statusEl.innerText = data.message || "Payment failed.";
-
-                payBtn.disabled = false;
-                payBtn.innerText = "Pay with M-Pesa";
-                resendBtn.style.display = "block";
+            // TIMEOUT
+            if (Date.now() - pollingStartedAt > POLL_TIMEOUT) {
+                stopChecking();
+                setStatus("Payment confirmation is taking too long. If you already paid, tap 'Resend Prompt' or refresh after a moment.", "error");
+                resetButtons();
                 return;
             }
 
             // PENDING
-            statusEl.className = "status info";
-            statusEl.innerText = data.message || "Waiting for payment confirmation...";
+            setStatus(data.message || "Waiting for payment confirmation...", "info");
 
         } catch (err) {
-            console.log("Status check error:", err.message);
+            console.error("Status check error:", err);
+
+            // Don't immediately stop on one network hiccup
+            setStatus("Still checking payment status...", "info");
         }
-    }, 3000);
+    }, POLL_INTERVAL);
 }
 
 async function pay() {
-    if (!phone) {
+    if (!rawPhone) {
         alert("Phone not found. Go back and enter your phone number first.");
         return;
     }
 
     stopChecking();
 
-    const formattedPhone = formatPhone(phone);
+    const formattedPhone = formatPhone(rawPhone);
 
     payBtn.disabled = true;
-    resendBtn.style.display = "none";
     payBtn.innerText = "Sending STK Push...";
-    statusEl.className = "status info";
-    statusEl.innerText = "Sending M-Pesa prompt to your phone...";
+    resendBtn.style.display = "none";
+
+    setStatus("Sending M-Pesa prompt to your phone...", "info");
 
     try {
         const res = await fetch(`${API}/stkpush`, {
@@ -300,33 +327,31 @@ async function pay() {
             throw new Error(data.error || data.ResponseDescription || "STK Push failed");
         }
 
-        const checkoutRequestID = data.checkoutRequestID || data.CheckoutRequestID;
+        const checkoutRequestID = data.CheckoutRequestID || data.checkoutRequestID;
 
         if (!checkoutRequestID) {
             throw new Error("No CheckoutRequestID returned from backend");
         }
 
-        statusEl.className = "status success";
-        statusEl.innerText = "STK Push sent. Check your phone and enter M-Pesa PIN.";
+        // Save the checkout ID immediately for debugging / recovery
+        localStorage.setItem("checkoutRequestID", checkoutRequestID);
+
+        setStatus("STK Push sent. Check your phone and enter your M-Pesa PIN.", "success");
         payBtn.innerText = "Waiting for payment...";
 
         checkPayment(checkoutRequestID);
 
+        // Show resend after 15 sec if still waiting
         setTimeout(() => {
-            if (payBtn.disabled) {
+            if (payBtn.disabled && paymentInterval) {
                 resendBtn.style.display = "block";
             }
         }, 15000);
 
     } catch (err) {
-        console.error(err);
-
-        statusEl.className = "status error";
-        statusEl.innerText = "Payment failed: " + err.message;
-
-        payBtn.disabled = false;
-        payBtn.innerText = "Pay with M-Pesa";
-        resendBtn.style.display = "block";
+        console.error("PAY ERROR:", err);
+        setStatus("Payment failed: " + err.message, "error");
+        resetButtons();
     }
 }
 </script>
