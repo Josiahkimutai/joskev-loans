@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joskev Loans</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+}
+
+/* soft glow background */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(0,255,255,0.08), transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(139,92,246,0.08), transparent 50%);
+    filter: blur(20px);
+}
+
+/* MONEY ANIMATION (smoothed) */
+.money {
+    position: absolute;
+    top: -60px;
+    font-size: 22px;
+    opacity: 0;
+    animation: fall linear infinite;
+    filter: blur(0.2px);
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 1; }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* glass container */
+.container {
+    text-align: center;
+    z-index: 2;
+    padding: 30px 40px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(0,255,255,0.08);
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* glowing ring behind logo */
+.logo-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.logo-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -15px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,255,0.25), transparent 70%);
+    filter: blur(10px);
+    animation: pulse 2.5s infinite;
+}
+
+.logo {
+    width: 120px;
+    border-radius: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+h1 {
+    margin-top: 20px;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+p {
+    opacity: 0.75;
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+/* loader */
+.loader {
+    margin: 25px auto 0;
+    width: 260px;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.loader span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #22c55e, #00e5ff, #8b5cf6);
+    animation: load 6s ease forwards;
+    border-radius: 50px;
+}
+
+@keyframes load {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<script>
+const moneyIcons = ["💵", "💸", "💰", "💵", "💸"];
+
+for (let i = 0; i < 45; i++) {
+    let m = document.createElement("div");
+    m.className = "money";
+    m.innerText = moneyIcons[Math.floor(Math.random() * moneyIcons.length)];
+
+    m.style.left = Math.random() * 100 + "vw";
+    m.style.animationDuration = (4 + Math.random() * 6) + "s";
+    m.style.animationDelay = Math.random() * 5 + "s";
+    m.style.fontSize = (14 + Math.random() * 26) + "px";
+
+    document.body.appendChild(m);
+}
+</script>
+
+<div class="container">
+
+    <div class="logo-wrap">
+        <img class="logo" src="splash.png" alt="Logo">
+    </div>
+
+    <h1>Joskev Loans</h1>
+    <p>Smart Loans. Better Future.</p>
+
+    <div class="loader"><span></span></div>
+</div>
+
+<script>
+setTimeout(() => {
+    window.location.href = "dashboard.html";
+}, 9500);
+</script>
+
+</body>
+</html>

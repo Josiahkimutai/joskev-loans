@@ -1,190 +1,319 @@
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joskev Loans - Login</title>
 
-<title>Login - Joskev Loans</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
+    font-family:'Poppins',sans-serif;
 }
 
 body{
-    background:linear-gradient(135deg,#0056d2,#003f9e);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
+    background:linear-gradient(135deg,#eef4ff,#f9fbff);
     padding:20px;
 }
 
 .card{
     width:100%;
-    max-width:450px;
-    background:white;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.2);
-}
-
-.card h1{
+    max-width:390px;
+    background:#fff;
+    padding:35px;
+    border-radius:22px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.08);
     text-align:center;
-    color:#0056d2;
-    margin-bottom:10px;
 }
 
-.card p{
-    text-align:center;
-    color:#666;
-    margin-bottom:25px;
+/* LOGO */
+.logo-box{
+    width:60px;
+    height:60px;
+    border-radius:16px;
+    background:linear-gradient(135deg,#2563eb,#22c55e);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:24px;
+    font-weight:700;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(37,99,235,.25);
 }
 
-.input-box{
-    margin-bottom:15px;
+.logo-title{
+    margin-top:10px;
+    font-size:22px;
+    font-weight:700;
+    color:#2563eb;
 }
 
-.input-box input{
-    width:100%;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    outline:none;
-    font-size:15px;
+.logo-sub{
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:22px;
 }
 
-.input-box input:focus{
-    border-color:#0056d2;
+/* HEADINGS */
+h2{
+    color:#111827;
+    font-size:24px;
+    margin-bottom:5px;
 }
 
-button{
-    width:100%;
-    padding:15px;
+.welcome{
+    color:#6b7280;
+    font-size:13px;
+    margin-bottom:20px;
+}
+
+/* PHONE */
+.phone{
+    display:flex;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:12px;
+}
+
+.prefix{
+    background:#f3f4f6;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-weight:600;
+}
+
+.phone input{
+    flex:1;
     border:none;
-    border-radius:10px;
-    background:linear-gradient(135deg,#0056d2,#003f9e);
-    color:white;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
+    outline:none;
+    padding:12px;
+    font-size:14px;
 }
 
-button:hover{
-    opacity:0.95;
+/* PASSWORD */
+.password{
+    width:100%;
+    padding:12px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    outline:none;
+    margin-bottom:10px;
+    font-size:14px;
 }
 
-.message{
-    margin-top:15px;
-    text-align:center;
-    font-weight:bold;
+/* OPTIONS */
+.options{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:12px;
+    margin-bottom:16px;
 }
 
-.register-link{
-    text-align:center;
-    margin-top:20px;
-}
-
-.register-link a{
-    color:#0056d2;
+.options a{
+    color:#2563eb;
     text-decoration:none;
-    font-weight:bold;
 }
 
-</style>
+/* LOGIN BUTTON */
+.login-btn{
+    width:100%;
+    border:none;
+    padding:13px;
+    border-radius:12px;
+    background:linear-gradient(90deg,#2563eb,#22c55e);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
 
+.login-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(37,99,235,.2);
+}
+
+.or{
+    margin:18px 0 14px;
+    color:#9ca3af;
+    font-size:12px;
+}
+
+/* SOCIAL */
+.social{
+    display:flex;
+    gap:10px;
+}
+
+.social button{
+    flex:1;
+    padding:11px;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition:.3s;
+    font-weight:600;
+}
+
+/* GOOGLE BUTTON */
+.google-btn{
+    background:#fff;
+    border:1px solid #dadce0;
+    color:#3c4043;
+}
+
+.google-btn:hover{
+    background:#f8f9fa;
+}
+
+.google-logo{
+    width:20px;
+    height:20px;
+}
+
+/* MPESA BUTTON */
+.mpesa-btn{
+    background:#00A651;
+    border:none;
+    color:#fff;
+}
+
+.mpesa-btn:hover{
+    background:#008f46;
+}
+
+.mpesa-logo{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:white;
+    color:#00A651;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+}
+
+/* SIGNUP */
+.signup{
+    margin-top:18px;
+    font-size:12px;
+    color:#6b7280;
+}
+
+.signup a{
+    color:#2563eb;
+    font-weight:600;
+    text-decoration:none;
+}
+</style>
 </head>
 
 <body>
 
 <div class="card">
 
-<h1>Welcome Back</h1>
+    <!-- LOGO -->
+    <div class="logo-box">J</div>
 
-<p>Login to your Joskev Loans account</p>
+    <div class="logo-title">
+        Joskev Loans
+    </div>
 
-<div class="input-box">
-    <input type="tel" id="phone" placeholder="Phone Number.+254.......">
-</div>
+    <div class="logo-sub">
+        Your Financial Partner
+    </div>
 
-<div class="input-box">
-    <input type="password" id="password" placeholder="Password">
-</div>
+    <!-- WELCOME -->
+    <h2>Welcome Back 👋</h2>
 
-<button onclick="loginUser()">
-    Login
+    <div class="welcome">
+        Login to your account to continue
+    </div>
+
+    <!-- PHONE -->
+    <div class="phone">
+        <div class="prefix">
+            🇰🇪 +254
+        </div>
+
+        <input type="tel" placeholder="712 345 678">
+    </div>
+
+    <!-- PASSWORD -->
+    <input
+        type="password"
+        class="password"
+        placeholder="Enter your password">
+
+    <!-- OPTIONS -->
+    <div class="options">
+        <label>
+            <input type="checkbox">
+            Remember me
+        </label>
+
+        <a href="#">Forgot Password?</a>
+    </div>
+
+    <!-- LOGIN -->
+  <button class="login-btn" onclick="window.location.href='dashboard.html'">
+    🔒 Login
 </button>
 
-<div class="message" id="message"></div>
+    <div class="or">
+        or continue with
+    </div>
 
-<div class="register-link">
-    Don't have an account?
-    <a href="nextpage.html">Apply Now</a>
-</div>
+    <!-- SOCIAL BUTTONS -->
+    <div class="social">
+
+        <!-- GOOGLE -->
+        <button class="google-btn">
+
+            <svg class="google-logo" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12S17.4 12 24 12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15 19 12 24 12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3c-2.1 1.6-4.7 2.5-7.3 2.5-5.3 0-9.8-3.3-11.4-8l-6.6 5.1C9.3 39.6 16.1 44 24 44z"/>
+                <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3.2-3.4 5.6-6.3 7.2l6.3 5.3C39.7 36.8 44 31 44 24c0-1.3-.1-2.4-.4-3.5z"/>
+            </svg>
+
+            Google
+        </button>
+
+        <!-- MPESA -->
+        <button class="mpesa-btn">
+            <span class="mpesa-logo">M</span>
+            M-PESA
+        </button>
+
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="signup">
+        Don't have an account?
+        <a href="nextpage.html">Apply Now →</a>
+    </div>
 
 </div>
 
 </body>
 </html>
-
-
-<script>
-const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
-
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
-
-const supabaseClient = supabase.createClient(
-    supabaseUrl,
-    supabaseKey
-);
-
-async function loginUser() {
-
-    let phone = document.getElementById("phone").value.trim();
-
-/* FORMAT KENYAN PHONE */
-
-if (phone.startsWith("0")) {
-    phone = "+254" + phone.substring(1);
-}
-
-if (phone.startsWith("254")) {
-    phone = "+" + phone;
-}
-    const password = document.getElementById("password").value.trim();
-    const message = document.getElementById("message");
-
-    message.innerHTML = "Checking account...";
-
-    const { data, error } = await supabaseClient
-        .from("applications")
-        .select("*")
-        .eq("phone", phone)
-        .eq("password", password)
-        .eq("is_verified", true)
-        .single();
-
-    if (error || !data) {
-        message.innerHTML = "❌ Invalid phone or password";
-        return;
-    }
-
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("userPhone", data.phone);
-    localStorage.setItem("userName", data.first_name);
-
-    message.innerHTML = "✅ Login successful";
-
-    setTimeout(() => {
-        window.location.href = "dashboard.html";
-    }, 1000);
-}
-</script>
+```
