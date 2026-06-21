@@ -288,7 +288,23 @@ h1{
 
 </div>
 
+<script>
+let percent = 0;
+const el = document.getElementById("percent");
 
+const interval = setInterval(() => {
+    percent++;
+    el.textContent = percent + "%";
+
+    if(percent >= 100){
+        clearInterval(interval);
+
+        setTimeout(() => {
+            window.location.href = "pay.html";
+        }, 700);
+    }
+}, 40);
+</script>
 
 </body>
 </html>
