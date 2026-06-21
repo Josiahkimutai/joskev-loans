@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>M-Pesa Payment - Joskev Loans</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at top left, rgba(0,166,81,0.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(0,86,210,0.15), transparent 35%),
+        linear-gradient(135deg,#f6f9ff,#eef5ff);
+}
+
+.card{
+    width:100%;
+    max-width:430px;
+    background:rgba(255,255,255,0.96);
+    border-radius:22px;
+    padding:32px 28px;
+    box-shadow:0 18px 45px rgba(14, 9, 9, 0.12);
+    text-align:center;
+}
+
+h1{
+    color:#0f172a;
+    margin-bottom:10px;
+    font-size:28px;
+}
+
+h1 span{
+    color:#0056d2;
+}
+
+.subtitle{
+    color:#64748b;
+    margin-bottom:25px;
+    font-size:15px;
+    line-height:1.6;
+}
+
+.amount-box{
+    background:linear-gradient(135deg,#f3f8ff,#e9f3ff);
+    border:1px solid #dbeafe;
+    padding:22px;
+    border-radius:16px;
+    margin-bottom:25px;
+}
+
+.amount-label{
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:8px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+.amount{
+    font-size:30px;
+    font-weight:800;
+    color:#0056d2;
+}
+
+.amount-note{
+    margin-top:8px;
+    font-size:14px;
+    color:#475569;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.pay-btn{
+    background:linear-gradient(135deg,#00a651,#007a3d);
+    color:white;
+}
+
+.pay-btn:hover{
+    transform:translateY(-2px);
+}
+
+.pay-btn:disabled{
+    opacity:0.65;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.resend-btn{
+    margin-top:12px;
+    background:#eef2ff;
+    color:#1e3a8a;
+    border:1px solid #dbeafe;
+}
+
+.resend-btn:hover{
+    background:#e5edff;
+    transform:translateY(-2px);
+}
+
+.status{
+    margin-top:16px;
+    min-height:22px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.status.success{ color:#15803d; }
+.status.error{ color:#dc2626; }
+.status.info{ color:#0056d2; }
+
+.note{
+    margin-top:18px;
+    font-size:13px;
+    color:#64748b;
+    line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+    <h1>Hello <span id="name">Customer</span></h1>
+
+    <p class="subtitle">
+        Pay the processing fee to continue your loan application.
+    </p>
+
+    <div class="amount-box">
+        <div class="amount-label">Processing Fee</div>
+        <div class="amount">KES 1</div>
+        <div class="amount-note">
+            An M-Pesa prompt will be sent to your phone instantly.
+        </div>
+    </div>
+
+    <button id="payBtn" class="pay-btn" onclick="pay()">
+        Pay with M-Pesa
+    </button>
+
+    <button id="resendBtn" class="resend-btn" onclick="pay()" style="display:none;">
+        Resend Prompt
+    </button>
+
+    <div id="status" class="status"></div>
+
+    <div class="note">
+        Make sure your phone is nearby and has enough balance to complete payment.
+    </div>
+
+</div>
+
+<script>
+const API = "https://mpesa-backend-k7ly.onrender.com";
+
+const phone = localStorage.getItem("phone");
+const name = localStorage.getItem("firstName");
+
+const nameEl = document.getElementById("name");
+const payBtn = document.getElementById("payBtn");
+const resendBtn = document.getElementById("resendBtn");
+const statusEl = document.getElementById("status");
+
+nameEl.innerText = name || "Customer";
+
+function formatPhone(phone) {
+    if (!phone) return "";
+
+    phone = phone.trim();
+
+    if (phone.startsWith("0")) {
+        return "254" + phone.substring(1);
+    }
+
+    if (phone.startsWith("+254")) {
+        return phone.substring(1);
+    }
+
+    return phone;
+}
+
+let paymentInterval = null;
+
+function stopChecking() {
+    if (paymentInterval) {
+        clearInterval(paymentInterval);
+        paymentInterval = null;
+    }
+}
+
+function checkPayment(checkoutRequestID) {
+    stopChecking();
+
+    paymentInterval = setInterval(async () => {
+        try {
+            const res = await fetch(`${API}/payment-status/${checkoutRequestID}`);
+            const data = await res.json();
+
+            console.log("PAYMENT STATUS:", data);
+
+            // SUCCESS
+            if (data.status === "SUCCESS") {
+             stopChecking();
+
+// save payment info safely
+localStorage.setItem("paymentDate", new Date().toLocaleString());
+
+if (phone) localStorage.setItem("phone", phone);
+if (data.mpesa_receipt) localStorage.setItem("mpesaReceipt", data.mpesa_receipt);
+
+// fixed amount since you charge 1
+localStorage.setItem("paidAmount", "1");
+
+statusEl.className = "status success";
+statusEl.innerText = "Payment successful! Redirecting...";
+
+setTimeout(() => {
+    window.location.href = "receipt.html";
+}, 1500);
+
+return;
+            }
+
+            // FAILED
+            if (data.status === "FAILED") {
+                stopChecking();
+
+                statusEl.className = "status error";
+                statusEl.innerText = data.message || "Payment failed.";
+
+                payBtn.disabled = false;
+                payBtn.innerText = "Pay with M-Pesa";
+                resendBtn.style.display = "block";
+                return;
+            }
+
+            // PENDING
+            statusEl.className = "status info";
+            statusEl.innerText = data.message || "Waiting for payment confirmation...";
+
+        } catch (err) {
+            console.log("Status check error:", err.message);
+        }
+    }, 3000);
+}
+
+async function pay() {
+    if (!phone) {
+        alert("Phone not found. Go back and enter your phone number first.");
+        return;
+    }
+
+    stopChecking();
+
+    const formattedPhone = formatPhone(phone);
+
+    payBtn.disabled = true;
+    resendBtn.style.display = "none";
+    payBtn.innerText = "Sending STK Push...";
+    statusEl.className = "status info";
+    statusEl.innerText = "Sending M-Pesa prompt to your phone...";
+
+    try {
+        const res = await fetch(`${API}/stkpush`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                phone: formattedPhone,
+                amount: 1
+            })
+        });
+
+        const data = await res.json();
+        console.log("STK RESPONSE:", data);
+
+        if (!res.ok) {
+            throw new Error(data.error || data.ResponseDescription || "STK Push failed");
+        }
+
+        const checkoutRequestID = data.checkoutRequestID || data.CheckoutRequestID;
+
+        if (!checkoutRequestID) {
+            throw new Error("No CheckoutRequestID returned from backend");
+        }
+
+        statusEl.className = "status success";
+        statusEl.innerText = "STK Push sent. Check your phone and enter M-Pesa PIN.";
+        payBtn.innerText = "Waiting for payment...";
+
+        checkPayment(checkoutRequestID);
+
+        setTimeout(() => {
+            if (payBtn.disabled) {
+                resendBtn.style.display = "block";
+            }
+        }, 15000);
+
+    } catch (err) {
+        console.error(err);
+
+        statusEl.className = "status error";
+        statusEl.innerText = "Payment failed: " + err.message;
+
+        payBtn.disabled = false;
+        payBtn.innerText = "Pay with M-Pesa";
+        resendBtn.style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
