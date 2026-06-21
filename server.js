@@ -2,19 +2,15 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const { createClient } = require("@supabase/supabase-js");
-
 require("dotenv").config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
-/* ===================================================
-   ENV VARIABLES
-=================================================== */
+/* ================= ENV ================= */
 const {
   CONSUMER_KEY,
   CONSUMER_SECRET,
@@ -25,60 +21,39 @@ const {
   SUPABASE_KEY
 } = process.env;
 
-/* ===================================================
-   SUPABASE
-=================================================== */
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+/* ================= SUPABASE ================= */
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ===================================================
-   HOME ROUTE
-=================================================== */
+/* ================= HOME ================= */
 app.get("/", (req, res) => {
-  res.send("M-Pesa + Supabase Server Running 🚀");
+  res.send("M-Pesa Server Running 🚀");
 });
 
-/* ===================================================
-   GET ACCESS TOKEN
-=================================================== */
+/* ================= ACCESS TOKEN ================= */
 async function getAccessToken() {
-  try {
-    const auth = Buffer.from(
-      `${CONSUMER_KEY}:${CONSUMER_SECRET}`
-    ).toString("base64");
+  const auth = Buffer.from(
+    `${CONSUMER_KEY}:${CONSUMER_SECRET}`
+  ).toString("base64");
 
-    const response = await axios.get(
-      "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
-      {
-        headers: {
-          Authorization: `Basic ${auth}`
-        }
+  const response = await axios.get(
+    "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+    {
+      headers: {
+        Authorization: `Basic ${auth}`
       }
-    );
+    }
+  );
 
-    return response.data.access_token;
-  } catch (err) {
-    console.log(
-      "TOKEN ERROR:",
-      err.response?.data || err.message
-    );
-    throw err;
-  }
+  return response.data.access_token;
 }
 
-/* ===================================================
-   STK PUSH
-=================================================== */
+/* ================= STK PUSH ================= */
 app.post("/stkpush", async (req, res) => {
   try {
     const { phone, amount } = req.body;
 
     if (!phone || !amount) {
-      return res.status(400).json({
-        error: "Phone and amount required"
-      });
+      return res.status(400).json({ error: "Phone and amount required" });
     }
 
     const token = await getAccessToken();
@@ -102,7 +77,7 @@ app.post("/stkpush", async (req, res) => {
       PartyB: SHORTCODE,
       PhoneNumber: phone,
       CallBackURL: CALLBACK_URL,
-      AccountReference: "FACEBOOK_APP",
+      AccountReference: "LOAN_APP",
       TransactionDesc: "Payment"
     };
 
@@ -116,210 +91,127 @@ app.post("/stkpush", async (req, res) => {
       }
     );
 
-    console.log("STK RESPONSE:");
-    console.log(response.data);
-
     const stkData = response.data;
 
-    /* SAVE PENDING PAYMENT IMMEDIATELY */
-    if (stkData.CheckoutRequestID) {
-      const { error: insertError } = await supabase
-        .from("payments")
-        .insert([
-          {
-            phone,
-            amount: Number(amount),
-            checkout_request_id: stkData.CheckoutRequestID,
-            merchant_request_id: stkData.MerchantRequestID || null,
-            status: "PENDING",
-            result_desc: "Waiting for M-Pesa callback"
-          }
-        ]);
+    console.log("STK RESPONSE:", stkData);
 
-      if (insertError) {
-        console.log("PENDING PAYMENT SAVE ERROR:", insertError.message);
-      } else {
-        console.log("PENDING PAYMENT SAVED ✅");
-      }
+    // save pending payment immediately
+    if (stkData.CheckoutRequestID) {
+      await supabase.from("payments").insert([
+        {
+          phone,
+          amount: Number(amount),
+          checkout_request_id: stkData.CheckoutRequestID,
+          merchant_request_id: stkData.MerchantRequestID,
+          status: "PENDING",
+          message: "Waiting for callback"
+        }
+      ]);
     }
 
     res.json(stkData);
-  } catch (err) {
-    console.log(
-      "STK ERROR:",
-      err.response?.data || err.message
-    );
 
-    res.status(500).json(
-      err.response?.data || {
-        error: err.message
-      }
-    );
+  } catch (err) {
+    console.log("STK ERROR:", err.response?.data || err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
-/* ===================================================
-   CALLBACK
-=================================================== */
+/* ================= CALLBACK (FIXED) ================= */
 app.post("/callback", async (req, res) => {
   try {
-    console.log("CALLBACK RECEIVED:");
-    console.log(JSON.stringify(req.body, null, 2));
+    console.log("CALLBACK RECEIVED:", JSON.stringify(req.body, null, 2));
 
     const stk = req.body?.Body?.stkCallback;
 
     if (!stk) {
-      console.log("No stkCallback found in callback body");
-      return res.json({
-        ResultCode: 0,
-        ResultDesc: "Accepted"
-      });
+      return res.json({ ResultCode: 0, ResultDesc: "Accepted" });
     }
 
-    const checkoutRequestID = stk.CheckoutRequestID || null;
-    const merchantRequestID = stk.MerchantRequestID || null;
+    const checkoutRequestID = stk.CheckoutRequestID;
+    const merchantRequestID = stk.MerchantRequestID;
     const resultCode = stk.ResultCode;
-    const resultDesc = stk.ResultDesc || "";
+    const resultDesc = stk.ResultDesc;
 
-    /* PAYMENT SUCCESS */
-    if (resultCode === 0) {
-      const items = stk.CallbackMetadata?.Item || [];
+    const items = stk.CallbackMetadata?.Item || [];
 
-      const phone =
-        items.find(i => i.Name === "PhoneNumber")?.Value || null;
+    const phone = items.find(i => i.Name === "PhoneNumber")?.Value || null;
+    const amount = items.find(i => i.Name === "Amount")?.Value || null;
+    const receipt = items.find(i => i.Name === "MpesaReceiptNumber")?.Value || null;
+    const transactionDate = items.find(i => i.Name === "TransactionDate")?.Value || null;
 
-      const amount =
-        items.find(i => i.Name === "Amount")?.Value || null;
+    const success = resultCode === 0;
 
-      const receipt =
-        items.find(i => i.Name === "MpesaReceiptNumber")?.Value || null;
+    const paymentData = {
+      phone,
+      amount,
+      mpesa_receipt: receipt,
+      transaction_date: transactionDate ? String(transactionDate) : null,
+      checkout_request_id: checkoutRequestID,
+      merchant_request_id: merchantRequestID,
+      status: success ? "SUCCESS" : "FAILED",
+      result_code: resultCode,
+      result_desc: resultDesc,
+      message: success ? "Payment successful" : resultDesc
+    };
 
-      const transactionDate =
-        items.find(i => i.Name === "TransactionDate")?.Value || null;
+    // UPSERT = SAFE (no duplicates, no missing rows)
+    const { error } = await supabase
+      .from("payments")
+      .upsert(paymentData, {
+        onConflict: "checkout_request_id"
+      });
 
-      /* UPDATE PAYMENT TO SUCCESS */
-      const { error: updatePaymentError } = await supabase
-        .from("payments")
-        .update({
-          phone,
-          amount,
-          mpesa_receipt: receipt,
-          transaction_date: transactionDate ? String(transactionDate) : null,
-          merchant_request_id: merchantRequestID,
-          status: "SUCCESS",
-          result_code: resultCode,
-          result_desc: resultDesc
-        })
-        .eq("checkout_request_id", checkoutRequestID);
-
-      if (updatePaymentError) {
-        console.log("PAYMENT UPDATE ERROR:", updatePaymentError.message);
-      } else {
-        console.log("PAYMENT UPDATED TO SUCCESS ✅");
-      }
-
-      /* UPDATE USER */
-      const { error: userError } = await supabase
-        .from("users")
-        .upsert(
-          {
-            phone,
-            is_paid: true
-          },
-          {
-            onConflict: "phone"
-          }
-        );
-
-      if (userError) {
-        console.log("USER UPDATE ERROR:", userError.message);
-      } else {
-        console.log("USER UPDATED ✅");
-      }
+    if (error) {
+      console.log("CALLBACK ERROR:", error.message);
     } else {
-      /* PAYMENT FAILED / CANCELLED / TIMED OUT */
-      const { error: failUpdateError } = await supabase
-        .from("payments")
-        .update({
-          merchant_request_id: merchantRequestID,
-          status: "FAILED",
-          result_code: resultCode,
-          result_desc: resultDesc
-        })
-        .eq("checkout_request_id", checkoutRequestID);
-
-      if (failUpdateError) {
-        console.log("FAILED PAYMENT UPDATE ERROR:", failUpdateError.message);
-      } else {
-        console.log("PAYMENT MARKED FAILED ✅");
-      }
-
-      console.log("PAYMENT FAILED:", resultDesc);
+      console.log("PAYMENT SAVED ✅");
     }
 
-    res.json({
-      ResultCode: 0,
-      ResultDesc: "Accepted"
-    });
+    // update user if success
+    if (success && phone) {
+      await supabase.from("users").upsert(
+        { phone, is_paid: true },
+        { onConflict: "phone" }
+      );
+    }
+
+    res.json({ ResultCode: 0, ResultDesc: "Accepted" });
+
   } catch (err) {
     console.log("CALLBACK ERROR:", err.message);
-
-    res.json({
-      ResultCode: 0,
-      ResultDesc: "Accepted"
-    });
+    res.json({ ResultCode: 0, ResultDesc: "Accepted" });
   }
 });
 
-/* ===================================================
-   PAYMENT STATUS CHECK
-   FRONTEND CALLS:
-   /payment-status/:checkoutRequestID
-=================================================== */
-app.get("/payment-status/:checkoutRequestID", async (req, res) => {
+/* ================= PAYMENT STATUS ================= */
+app.get("/payment-status/:id", async (req, res) => {
   try {
-    const { checkoutRequestID } = req.params;
+    const { id } = req.params;
 
-    if (!checkoutRequestID) {
-      return res.status(400).json({
-        success: false,
-        error: "checkoutRequestID is required"
-      });
-    }
-
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("payments")
       .select("*")
-      .eq("checkout_request_id", checkoutRequestID)
-      .order("id", { ascending: false })
-      .limit(1)
+      .eq("checkout_request_id", id)
       .maybeSingle();
-
-    if (error) {
-      console.log("STATUS CHECK ERROR:", error.message);
-      return res.status(500).json({
-        success: false,
-        error: error.message
-      });
-    }
 
     if (!data) {
       return res.json({
         success: true,
         found: false,
         status: "PENDING",
-        message: "Payment not yet confirmed"
+        message: "Waiting for payment"
       });
     }
 
     return res.json({
       success: true,
       found: true,
-      status: data.status || "PENDING",
+      status: data.status,
       payment: data
     });
+
   } catch (err) {
-    console.log("PAYMENT STATUS ERROR:", err.message);
     return res.status(500).json({
       success: false,
       error: err.message
@@ -327,46 +219,27 @@ app.get("/payment-status/:checkoutRequestID", async (req, res) => {
   }
 });
 
-/* ===================================================
-   LOGIN CHECK
-=================================================== */
+/* ================= LOGIN ================= */
 app.post("/login", async (req, res) => {
   try {
     const { phone } = req.body;
 
-    if (!phone) {
-      return res.json({
-        is_paid: false
-      });
-    }
-
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("users")
       .select("is_paid")
       .eq("phone", phone)
       .maybeSingle();
 
-    if (error || !data) {
-      return res.json({
-        is_paid: false
-      });
-    }
+    return res.json({
+      is_paid: data?.is_paid || false
+    });
 
-    return res.json({
-      is_paid: data.is_paid
-    });
   } catch (err) {
-    return res.json({
-      is_paid: false
-    });
+    return res.json({ is_paid: false });
   }
 });
 
-/* ===================================================
-   START SERVER
-=================================================== */
+/* ================= START ================= */
 app.listen(PORT, () => {
-  console.log("=================================");
   console.log(`Server running on port ${PORT}`);
-  console.log("=================================");
 });

