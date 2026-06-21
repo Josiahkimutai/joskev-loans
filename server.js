@@ -1,4 +1,3 @@
-
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
@@ -45,9 +44,7 @@ app.get("/", (req, res) => {
    GET ACCESS TOKEN
 =================================================== */
 async function getAccessToken() {
-
   try {
-
     const auth = Buffer.from(
       `${CONSUMER_KEY}:${CONSUMER_SECRET}`
     ).toString("base64");
@@ -62,14 +59,11 @@ async function getAccessToken() {
     );
 
     return response.data.access_token;
-
   } catch (err) {
-
     console.log(
       "TOKEN ERROR:",
       err.response?.data || err.message
     );
-
     throw err;
   }
 }
@@ -78,13 +72,10 @@ async function getAccessToken() {
    STK PUSH
 =================================================== */
 app.post("/stkpush", async (req, res) => {
-
   try {
-
     const { phone, amount } = req.body;
 
     if (!phone || !amount) {
-
       return res.status(400).json({
         error: "Phone and amount required"
       });
@@ -102,23 +93,16 @@ app.post("/stkpush", async (req, res) => {
     ).toString("base64");
 
     const stkBody = {
-
       BusinessShortCode: SHORTCODE,
       Password: password,
       Timestamp: timestamp,
-
       TransactionType: "CustomerPayBillOnline",
-
       Amount: Number(amount),
-
       PartyA: phone,
       PartyB: SHORTCODE,
       PhoneNumber: phone,
-
       CallBackURL: CALLBACK_URL,
-
       AccountReference: "FACEBOOK_APP",
-
       TransactionDesc: "Payment"
     };
 
@@ -135,10 +119,32 @@ app.post("/stkpush", async (req, res) => {
     console.log("STK RESPONSE:");
     console.log(response.data);
 
-    res.json(response.data);
+    const stkData = response.data;
 
+    /* SAVE PENDING PAYMENT IMMEDIATELY */
+    if (stkData.CheckoutRequestID) {
+      const { error: insertError } = await supabase
+        .from("payments")
+        .insert([
+          {
+            phone,
+            amount: Number(amount),
+            checkout_request_id: stkData.CheckoutRequestID,
+            merchant_request_id: stkData.MerchantRequestID || null,
+            status: "PENDING",
+            result_desc: "Waiting for M-Pesa callback"
+          }
+        ]);
+
+      if (insertError) {
+        console.log("PENDING PAYMENT SAVE ERROR:", insertError.message);
+      } else {
+        console.log("PENDING PAYMENT SAVED ✅");
+      }
+    }
+
+    res.json(stkData);
   } catch (err) {
-
     console.log(
       "STK ERROR:",
       err.response?.data || err.message
@@ -156,111 +162,107 @@ app.post("/stkpush", async (req, res) => {
    CALLBACK
 =================================================== */
 app.post("/callback", async (req, res) => {
-
   try {
-
     console.log("CALLBACK RECEIVED:");
-    console.log(
-      JSON.stringify(req.body, null, 2)
-    );
+    console.log(JSON.stringify(req.body, null, 2));
 
-    const stk =
-      req.body?.Body?.stkCallback;
+    const stk = req.body?.Body?.stkCallback;
+
+    if (!stk) {
+      console.log("No stkCallback found in callback body");
+      return res.json({
+        ResultCode: 0,
+        ResultDesc: "Accepted"
+      });
+    }
+
+    const checkoutRequestID = stk.CheckoutRequestID || null;
+    const merchantRequestID = stk.MerchantRequestID || null;
+    const resultCode = stk.ResultCode;
+    const resultDesc = stk.ResultDesc || "";
 
     /* PAYMENT SUCCESS */
-    if (stk?.ResultCode === 0) {
-
-      const items =
-        stk.CallbackMetadata?.Item || [];
+    if (resultCode === 0) {
+      const items = stk.CallbackMetadata?.Item || [];
 
       const phone =
-        items.find(
-          i => i.Name === "PhoneNumber"
-        )?.Value;
+        items.find(i => i.Name === "PhoneNumber")?.Value || null;
 
       const amount =
-        items.find(
-          i => i.Name === "Amount"
-        )?.Value;
+        items.find(i => i.Name === "Amount")?.Value || null;
 
       const receipt =
-        items.find(
-          i => i.Name === "MpesaReceiptNumber"
-        )?.Value;
+        items.find(i => i.Name === "MpesaReceiptNumber")?.Value || null;
 
-      /* SAVE PAYMENT */
-      const { error } = await supabase
+      const transactionDate =
+        items.find(i => i.Name === "TransactionDate")?.Value || null;
+
+      /* UPDATE PAYMENT TO SUCCESS */
+      const { error: updatePaymentError } = await supabase
         .from("payments")
-        .insert([
-          {
-            phone,
-            amount,
-            mpesa_receipt: receipt,
-            status: "SUCCESS"
-          }
-        ]);
+        .update({
+          phone,
+          amount,
+          mpesa_receipt: receipt,
+          transaction_date: transactionDate ? String(transactionDate) : null,
+          merchant_request_id: merchantRequestID,
+          status: "SUCCESS",
+          result_code: resultCode,
+          result_desc: resultDesc
+        })
+        .eq("checkout_request_id", checkoutRequestID);
 
-      if (error) {
-
-        console.log(
-          "PAYMENT SAVE ERROR:",
-          error.message
-        );
-
+      if (updatePaymentError) {
+        console.log("PAYMENT UPDATE ERROR:", updatePaymentError.message);
       } else {
-
-        console.log(
-          "PAYMENT SAVED ✅"
-        );
+        console.log("PAYMENT UPDATED TO SUCCESS ✅");
       }
 
       /* UPDATE USER */
-      const { error: userError } =
-        await supabase
-          .from("users")
-          .upsert(
-            {
-              phone,
-              is_paid: true
-            },
-            {
-              onConflict: "phone"
-            }
-          );
+      const { error: userError } = await supabase
+        .from("users")
+        .upsert(
+          {
+            phone,
+            is_paid: true
+          },
+          {
+            onConflict: "phone"
+          }
+        );
 
       if (userError) {
-
-        console.log(
-          "USER UPDATE ERROR:",
-          userError.message
-        );
-
+        console.log("USER UPDATE ERROR:", userError.message);
       } else {
+        console.log("USER UPDATED ✅");
+      }
+    } else {
+      /* PAYMENT FAILED / CANCELLED / TIMED OUT */
+      const { error: failUpdateError } = await supabase
+        .from("payments")
+        .update({
+          merchant_request_id: merchantRequestID,
+          status: "FAILED",
+          result_code: resultCode,
+          result_desc: resultDesc
+        })
+        .eq("checkout_request_id", checkoutRequestID);
 
-        console.log(
-          "USER UPDATED ✅"
-        );
+      if (failUpdateError) {
+        console.log("FAILED PAYMENT UPDATE ERROR:", failUpdateError.message);
+      } else {
+        console.log("PAYMENT MARKED FAILED ✅");
       }
 
-    } else {
-
-      console.log(
-        "PAYMENT FAILED:",
-        stk?.ResultDesc
-      );
+      console.log("PAYMENT FAILED:", resultDesc);
     }
 
     res.json({
       ResultCode: 0,
       ResultDesc: "Accepted"
     });
-
   } catch (err) {
-
-    console.log(
-      "CALLBACK ERROR:",
-      err.message
-    );
+    console.log("CALLBACK ERROR:", err.message);
 
     res.json({
       ResultCode: 0,
@@ -270,30 +272,81 @@ app.post("/callback", async (req, res) => {
 });
 
 /* ===================================================
+   PAYMENT STATUS CHECK
+   FRONTEND CALLS:
+   /payment-status/:checkoutRequestID
+=================================================== */
+app.get("/payment-status/:checkoutRequestID", async (req, res) => {
+  try {
+    const { checkoutRequestID } = req.params;
+
+    if (!checkoutRequestID) {
+      return res.status(400).json({
+        success: false,
+        error: "checkoutRequestID is required"
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("payments")
+      .select("*")
+      .eq("checkout_request_id", checkoutRequestID)
+      .order("id", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.log("STATUS CHECK ERROR:", error.message);
+      return res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+
+    if (!data) {
+      return res.json({
+        success: true,
+        found: false,
+        status: "PENDING",
+        message: "Payment not yet confirmed"
+      });
+    }
+
+    return res.json({
+      success: true,
+      found: true,
+      status: data.status || "PENDING",
+      payment: data
+    });
+  } catch (err) {
+    console.log("PAYMENT STATUS ERROR:", err.message);
+    return res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+});
+
+/* ===================================================
    LOGIN CHECK
 =================================================== */
 app.post("/login", async (req, res) => {
-
   try {
-
     const { phone } = req.body;
 
     if (!phone) {
-
       return res.json({
         is_paid: false
       });
     }
 
-    const { data, error } =
-      await supabase
-        .from("users")
-        .select("is_paid")
-        .eq("phone", phone)
-        .maybeSingle();
+    const { data, error } = await supabase
+      .from("users")
+      .select("is_paid")
+      .eq("phone", phone)
+      .maybeSingle();
 
     if (error || !data) {
-
       return res.json({
         is_paid: false
       });
@@ -302,9 +355,7 @@ app.post("/login", async (req, res) => {
     return res.json({
       is_paid: data.is_paid
     });
-
   } catch (err) {
-
     return res.json({
       is_paid: false
     });
@@ -315,11 +366,7 @@ app.post("/login", async (req, res) => {
    START SERVER
 =================================================== */
 app.listen(PORT, () => {
-
   console.log("=================================");
-  console.log(
-    `Server running on port ${PORT}`
-  );
+  console.log(`Server running on port ${PORT}`);
   console.log("=================================");
 });
-
