@@ -296,26 +296,6 @@ h1{
 
 </div>
 
-<script>
-const percentEl = document.getElementById("percent");
-const barEl = document.getElementById("bar");
-
-let percent = 0;
-
-const interval = setInterval(() => {
-    percent++;
-    percentEl.textContent = percent + "%";
-    barEl.style.width = percent + "%";
-
-    if(percent >= 100){
-        clearInterval(interval);
-
-        setTimeout(() => {
-            window.location.href = "third.html";
-        }, 500);
-    }
-}, 50);
-</script>
 
 </body>
 </html>

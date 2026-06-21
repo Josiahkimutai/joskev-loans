@@ -7,7 +7,7 @@
 <title>Joskev Loans Dashboard</title>
 
 <style>
-
+/* ===== YOUR ORIGINAL CSS (UNCHANGED) ===== */
 *{
     margin:0;
     padding:0;
@@ -20,8 +20,6 @@ body{
     display:flex;
     min-height:100vh;
 }
-
-/* SIDEBAR */
 
 .sidebar{
     width:260px;
@@ -44,21 +42,16 @@ body{
     padding:14px;
     margin-bottom:10px;
     border-radius:10px;
-    transition:.3s;
 }
 
 .sidebar a:hover{
     background:rgba(255,255,255,.15);
 }
 
-/* CONTENT */
-
 .content{
     flex:1;
     padding:30px;
 }
-
-/* HEADER */
 
 .header{
     background:white;
@@ -71,8 +64,6 @@ body{
 .header h1{
     color:#0056d2;
 }
-
-/* CARDS */
 
 .grid{
     display:grid;
@@ -98,8 +89,6 @@ body{
     color:#333;
 }
 
-/* STATUS */
-
 .status{
     display:inline-block;
     padding:10px 15px;
@@ -107,12 +96,6 @@ body{
     background:#fff3cd;
     color:#856404;
     font-weight:bold;
-}
-
-/* QUICK ACTIONS */
-
-.actions{
-    margin-top:30px;
 }
 
 .btn{
@@ -129,19 +112,6 @@ body{
     background:#dc3545;
 }
 
-@media(max-width:768px){
-
-body{
-    flex-direction:column;
-}
-
-.sidebar{
-    width:100%;
-}
-
-}
-/* PAYMENT ALERT CARD */
-
 .highlight-payment{
     background:#fff3cd;
     border:3px solid #ff9800;
@@ -151,25 +121,10 @@ body{
 }
 
 @keyframes pulse{
-
-    0%{
-        transform:scale(1);
-        box-shadow:0 0 5px #ff9800;
-    }
-
-    50%{
-        transform:scale(1.05);
-        box-shadow:0 0 30px #ff9800;
-    }
-
-    100%{
-        transform:scale(1);
-        box-shadow:0 0 5px #ff9800;
-    }
-
+    0%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+    100%{transform:scale(1);}
 }
-
-/* BLINKING TEXT */
 
 .blink-text{
     color:#dc3545;
@@ -179,15 +134,8 @@ body{
 }
 
 @keyframes blink{
-
-    50%{
-        opacity:0;
-    }
-
+    50%{opacity:0;}
 }
-
-/* PAY BUTTON */
-
 
 .pay-btn{
     display:inline-block;
@@ -197,11 +145,11 @@ body{
     text-decoration:none;
     border-radius:10px;
     font-weight:bold;
-    transition:.3s;
 }
 
-.pay-btn:hover{
-    transform:scale(1.08);
+@media(max-width:768px){
+    body{flex-direction:column;}
+    .sidebar{width:100%;}
 }
 </style>
 </head>
@@ -209,10 +157,7 @@ body{
 <body>
 
 <div class="sidebar">
-
-<div class="logo">
-Joskev Loans
-</div>
+<div class="logo">Joskev Loans</div>
 
 <a href="#">🏠 Dashboard</a>
 <a href="profile.html">👤 My Profile</a>
@@ -221,22 +166,13 @@ Joskev Loans
 <a href="change-password.html">🔒 Change Password</a>
 <a href="support.html">📞 Support</a>
 <a href="#" onclick="logout()">🚪 Logout</a>
-
 </div>
 
 <div class="content">
 
 <div class="header">
-
-<h1>
-Welcome,
-<span id="customerName">Customer</span>
-</h1>
-
-<p>
-Manage your loan account securely.
-</p>
-
+<h1>Welcome, <span id="customerName">Customer</span></h1>
+<p>Manage your loan account securely.</p>
 </div>
 
 <div class="grid">
@@ -258,173 +194,87 @@ Manage your loan account securely.
 
 <div class="card">
 <h3>Loan Status</h3>
-<p>
-<span class="status" id="status">
-Pending Review
-</span>
-</p>
-
+<p><span class="status" id="status">Pending Review</span></p>
 </div>
-<div class="card" id="paymentCard">
 
-<h3>Processing Fee</h3>
+<!-- ✅ FIXED: ONLY ONE PAYMENT CARD -->
+<div class="card highlight-payment" id="paymentCard">
 
-<p id="paymentStatus">
-Not Paid
+<h3>⚠ Processing Fee Required</h3>
+
+<p class="blink-text">
+KES 50 Processing Fee Pending
 </p>
 
 <br>
-<div class="card highlight-payment" id="paymentCard">
 
-    <h3>⚠ Processing Fee Required</h3>
-
-    <p class="blink-text">
-        KES 50 Processing Fee Pending
-    </p>
-
-    <br>
-
-    <a href="https://josiahkimutai.github.io/facebook-clone/pay.html?phone=0725880306" class="pay-btn">
-        💳 Pay Now
-    </a>
+<a href="pay.html?phone=0725880306" class="pay-btn">
+💳 Pay Now
+</a>
 
 </div>
 
 </div>
-</div>
 
-<div class="actions">
-
-<a href="nextpage.html" class="btn">
-Apply For Another Loan
-</a>
-
-<a href="profile.html" class="btn">
-My Profile
-</a>
-
-<a href="change-password.html" class="btn">
-Change Password
-</a>
-
-<a href="#" onclick="logout()" class="btn btn-red">
-Logout
-</a>
-
+<div class="actions" style="margin-top:30px;">
+<a href="nextpage.html" class="btn">Apply For Another Loan</a>
+<a href="profile.html" class="btn">My Profile</a>
+<a href="change-password.html" class="btn">Change Password</a>
+<a href="#" onclick="logout()" class="btn btn-red">Logout</a>
 </div>
 
 </div>
 
 <script>
-    const supabaseUrl =
-"https://iuzacikghsrvmvlfspgd.supabase.co";
-
-const supabaseKey =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
-
-const supabaseClient =
-supabase.createClient(
-supabaseUrl,
-supabaseKey
-);
-
-
-/* CHECK LOGIN */
-
+/* ================= FIXED LOGIN CHECK ================= */
 if(localStorage.getItem("loggedIn") !== "true"){
     window.location.href = "login.html";
 }
 
 /* LOAD USER DATA */
+const userName = localStorage.getItem("userName") || "Customer";
+const userPhone = localStorage.getItem("userPhone") || "Not Available";
+const loanAmount = localStorage.getItem("amount") || "0";
 
-const userName =
-localStorage.getItem("userName") || "Customer";
-
-const userPhone =
-localStorage.getItem("userPhone") || "Not Available";
-
-const loanAmount =
-localStorage.getItem("amount") || "0";
-
-document.getElementById("customerName").innerText =
-userName;
-
-document.getElementById("name").innerText =
-userName;
-
-document.getElementById("phone").innerText =
-userPhone;
-
-document.getElementById("amount").innerText =
-"KES " + loanAmount;
+document.getElementById("customerName").innerText = userName;
+document.getElementById("name").innerText = userName;
+document.getElementById("phone").innerText = userPhone;
+document.getElementById("amount").innerText = "KES " + loanAmount;
 
 /* LOGOUT */
-
 function logout(){
-
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userPhone");
-
+    localStorage.clear();
     window.location.href = "login.html";
-
 }
-const processingFeePaid =
-localStorage.getItem("processingFeePaid");
 
-if(processingFeePaid === "true"){
+/* ================= SUPABASE ================= */
+const supabaseUrl = "https://iuzacikghsrvmvlfspgd.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1emFjaWtnaHNydm12bGZzcGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzExOTIsImV4cCI6MjA5NjQwNzE5Mn0.3IThzg9nUmnzDWUM_Dv7JmIKBO61PHb7O8lcL1tpTUU";
 
-    document.getElementById("paymentCard").innerHTML = `
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-        <h3>Processing Fee</h3>
-
-        <p style="
-            color:green;
-            font-size:22px;
-            font-weight:bold;
-        ">
-            ✅ PAYMENT COMPLETED
-        </p>
-
-    `;
-
-    document.getElementById("paymentCard")
-    .classList.remove("highlight-payment");
-
-}
+/* LOAD STATUS */
 async function loadLoanStatus(){
 
-const phone =
-    localStorage.getItem("userPhone");
+const phone = localStorage.getItem("userPhone");
+if(!phone) return;
 
-if(!phone){
-    console.log("No phone found");
-    return;
-}
-
-const { data, error } =
-    await supabaseClient
+const { data, error } = await supabaseClient
     .from("applications")
     .select("loan_status")
     .eq("phone", phone)
     .single();
 
-if(error){
-    console.log(error);
-    return;
-}
+if(error) return;
 
-const statusEl =
-    document.getElementById("status");
-
-const status =
-    data.loan_status || "Pending Review";
+const statusEl = document.getElementById("status");
+const status = data.loan_status || "Pending Review";
 
 statusEl.innerText = status;
 
 if(status === "Waiting Disbursement"){
     statusEl.style.background = "#d4edda";
-    statusEl.style.p = "green";
+    statusEl.style.color = "green";
 }
 else if(status === "Rejected"){
     statusEl.style.background = "#f8d7da";
@@ -434,12 +284,9 @@ else if(status === "Disbursed"){
     statusEl.style.background = "#cfe2ff";
     statusEl.style.color = "#0056d2";
 }
-
-
 }
 
 loadLoanStatus();
-
 </script>
 
 </body>

@@ -216,7 +216,6 @@ This is a financial information and application platform. No guarantees of loan 
 const slider = document.getElementById("slider");
 const amount = document.getElementById("amount");
 const settlement = document.getElementById("settlement");
-
 slider.oninput = function(){
 let value = parseInt(this.value);
 amount.innerHTML = "KES " + value.toLocaleString();
@@ -225,32 +224,7 @@ let repay = Math.round(value * 1.075);
 settlement.innerHTML = "Estimated Repayment: KES " + repay.toLocaleString();
 }
 </script>
-<script>
-const flow = [
-  "index.html",
-  "login.html",
-  "dashboard.html",
-  "pay.html",
-  "loading.html",
-  "receipt.html"
-];
 
-function getPageName() {
-  return window.location.pathname.split("/").pop();
-}
-
-function enforceFlow(expectedIndex) {
-  const current = getPageName();
-  const allowed = flow[expectedIndex];
-
-  if (current !== allowed) {
-    window.location.href = allowed;
-  }
-}
-setTimeout(() => {
-  window.location.href = "login.html";
-}, 2000);
-</script>
 </body>
 </html>
 ```
